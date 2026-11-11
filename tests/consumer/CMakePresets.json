@@ -1,0 +1,20 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "default",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "with-runtime",
+      "inherits": "default",
+      "cacheVariables": {
+        "tree-sitter_DIR": "C:/path/to/tree-sitter/lib/cmake/tree-sitter"
+      }
+    }
+  ]
+}

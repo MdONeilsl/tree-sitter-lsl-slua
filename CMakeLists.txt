@@ -46,6 +46,11 @@ function(ts_define_grammar name)
     set(target tree-sitter-${name})
 
     add_library(${target} STATIC "${CMAKE_CURRENT_SOURCE_DIR}/${name}/src/parser.c")
+
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${name}/src/scanner.c")
+        target_sources(${target} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/${name}/src/scanner.c")
+    endif()
+
     add_library(tree-sitter::${name} ALIAS ${target})
 
     target_include_directories(${target} PUBLIC

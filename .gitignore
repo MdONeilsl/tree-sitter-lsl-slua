@@ -82,3 +82,9 @@ __pycache__/
 Thumbs.db
 ehthumbs.db
 desktop.ini
+
+slua/diagnose.py
+slua/scanner_probe.py
+probe_out.txt
+
+tests/consumer/build/

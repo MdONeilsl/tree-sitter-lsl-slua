@@ -42,9 +42,10 @@ def rule_blank():
     return {"type": "BLANK"}
 
 
-# ---------------------------------------------------------------------------
-# Precedence helpers
-# ---------------------------------------------------------------------------
+def rule_optional(content):
+    return rule_choice(content, rule_blank())
+
+
 def rule_prec(level, content):
     return {"type": "PREC", "value": level, "content": content}
 
@@ -63,20 +64,21 @@ def rule_prec_right(level, content):
 def build_grammar():
     rules_ordered = []
 
-    # 1. Start rule — MUST be first.
+    # 1. Start rule — MUST be first in `rules`.
     rules_ordered.append((
         "source_file",
         rule_repeat(
             rule_choice(
                 rule_symbol("global_declaration"),
                 rule_symbol("state_definition"),
+                rule_symbol("preproc_directive"),
             )
         )
     ))
 
     # 2. Comments
     rules_ordered.append((
-        "_comment",
+        "comment",
         rule_choice(
             rule_seq(rule_string("//"), rule_pattern(r"[^\n]*")),
             rule_seq(
@@ -87,31 +89,57 @@ def build_grammar():
         )
     ))
 
-    # 3. Global declarations
+    # 3. Preprocessor directives — a proper node (NOT an extra), so they
+    #    appear in the tree and can be styled by highlighters.
+    rules_ordered.append((
+        "preproc_directive",
+        rule_seq(
+            rule_string("#"),
+            rule_choice(
+                rule_string("include"),
+                rule_string("define"),
+                rule_string("undef"),
+                rule_string("ifdef"),
+                rule_string("ifndef"),
+                rule_string("if"),
+                rule_string("elif"),
+                rule_string("else"),
+                rule_string("endif"),
+                rule_string("warning"),
+                rule_string("error"),
+            ),
+            rule_pattern(r"[^\n]*"),
+        )
+    ))
+
+    # 4. Global declarations
     rules_ordered.append((
         "global_declaration",
         rule_symbol("variable_declaration")
     ))
 
-    # 4. States
+    # 5. States
     rules_ordered.append((
         "state_definition",
         rule_seq(
             rule_choice(
                 rule_string("default"),
-                rule_seq(rule_string("state"), rule_symbol("_identifier")),
+                rule_seq(rule_string("state"), rule_symbol("identifier")),
             ),
             rule_string("{"),
-            rule_repeat(rule_symbol("event_handler")),
+            rule_repeat(rule_choice(
+                rule_symbol("event_handler"),
+                rule_symbol("preproc_directive"),
+            )),
             rule_string("}"),
         )
     ))
 
-    # 5. Event handlers
+    # 6. Event handlers
     rules_ordered.append((
         "event_handler",
         rule_seq(
-            rule_symbol("_identifier"),
+            rule_symbol("identifier"),
             rule_symbol("parameter_list"),
             rule_symbol("block"),
         )
@@ -136,11 +164,11 @@ def build_grammar():
         "_parameter",
         rule_seq(
             rule_symbol("type"),
-            rule_symbol("_identifier"),
+            rule_symbol("identifier"),
         )
     ))
 
-    # 6. Blocks and statements
+    # 7. Blocks and statements
     rules_ordered.append((
         "block",
         rule_seq(
@@ -151,14 +179,31 @@ def build_grammar():
     ))
 
     rules_ordered.append((
+        "_body",
+        rule_choice(
+            rule_symbol("block"),
+            rule_symbol("_statement"),
+        )
+    ))
+
+    rules_ordered.append((
         "_statement",
         rule_choice(
             rule_symbol("variable_declaration"),
             rule_symbol("expression_statement"),
             rule_symbol("return_statement"),
             rule_symbol("if_statement"),
+            rule_symbol("switch_statement"),
             rule_symbol("while_statement"),
+            rule_symbol("do_while_statement"),
             rule_symbol("for_statement"),
+            rule_symbol("state_transition"),
+            rule_symbol("jump_statement"),
+            rule_symbol("label_statement"),
+            rule_symbol("lazy_list_assignment"),
+            rule_symbol("break_statement"),
+            rule_symbol("preproc_directive"),
+            rule_string(";"),
         )
     ))
 
@@ -166,7 +211,7 @@ def build_grammar():
         "variable_declaration",
         rule_seq(
             rule_symbol("type"),
-            rule_symbol("_identifier"),
+            rule_symbol("identifier"),
             rule_choice(
                 rule_seq(rule_string("="), rule_symbol("_expression")),
                 rule_blank(),
@@ -196,17 +241,68 @@ def build_grammar():
 
     rules_ordered.append((
         "if_statement",
+        rule_prec_right(
+            1,
+            rule_seq(
+                rule_string("if"),
+                rule_string("("),
+                rule_symbol("_expression"),
+                rule_string(")"),
+                rule_symbol("_body"),
+                rule_choice(
+                    rule_seq(rule_string("else"), rule_symbol("_body")),
+                    rule_blank(),
+                ),
+            ),
+        )
+    ))
+
+    # switch (expr) { case ... default ... }
+    rules_ordered.append((
+        "switch_statement",
         rule_seq(
-            rule_string("if"),
+            rule_string("switch"),
             rule_string("("),
             rule_symbol("_expression"),
             rule_string(")"),
-            rule_symbol("block"),
-            rule_choice(
-                rule_seq(rule_string("else"), rule_symbol("block")),
-                rule_blank(),
-            ),
+            rule_string("{"),
+            rule_repeat(rule_symbol("_switch_clause")),
+            rule_string("}"),
         )
+    ))
+
+    rules_ordered.append((
+        "_switch_clause",
+        rule_choice(
+            rule_symbol("case_clause"),
+            rule_symbol("default_clause"),
+        )
+    ))
+
+    # case expr : body  — body is zero or more statements/blocks, ending
+    # naturally when the next token is `case`, `default`, or `}`.
+    rules_ordered.append((
+        "case_clause",
+        rule_seq(
+            rule_string("case"),
+            rule_symbol("_expression"),
+            rule_string(":"),
+            rule_repeat(rule_symbol("_body")),
+        )
+    ))
+
+    rules_ordered.append((
+        "default_clause",
+        rule_seq(
+            rule_string("default"),
+            rule_string(":"),
+            rule_repeat(rule_symbol("_body")),
+        )
+    ))
+
+    rules_ordered.append((
+        "break_statement",
+        rule_seq(rule_string("break"), rule_string(";"))
     ))
 
     rules_ordered.append((
@@ -216,7 +312,20 @@ def build_grammar():
             rule_string("("),
             rule_symbol("_expression"),
             rule_string(")"),
-            rule_symbol("block"),
+            rule_symbol("_body"),
+        )
+    ))
+
+    rules_ordered.append((
+        "do_while_statement",
+        rule_seq(
+            rule_string("do"),
+            rule_symbol("_body"),
+            rule_string("while"),
+            rule_string("("),
+            rule_symbol("_expression"),
+            rule_string(")"),
+            rule_string(";"),
         )
     ))
 
@@ -225,7 +334,7 @@ def build_grammar():
         rule_seq(
             rule_string("for"),
             rule_string("("),
-            rule_symbol("_identifier"),
+            rule_symbol("identifier"),
             rule_string("="),
             rule_symbol("_expression"),
             rule_string(";"),
@@ -233,38 +342,78 @@ def build_grammar():
             rule_string(";"),
             rule_symbol("_expression"),
             rule_string(")"),
-            rule_symbol("block"),
+            rule_symbol("_body"),
         )
     ))
 
-    # ------------------------------------------------------------------
-    # 7. EXPRESSIONS — precedence-ordered
-    # ------------------------------------------------------------------
+    rules_ordered.append((
+        "state_transition",
+        rule_seq(
+            rule_string("state"),
+            rule_symbol("identifier"),
+            rule_string(";"),
+        )
+    ))
+
+    rules_ordered.append((
+        "jump_statement",
+        rule_seq(
+            rule_string("jump"),
+            rule_symbol("identifier"),
+            rule_string(";"),
+        )
+    ))
+
+    rules_ordered.append((
+        "label_statement",
+        rule_seq(
+            rule_string("@"),
+            rule_symbol("identifier"),
+            rule_string(";"),
+        )
+    ))
+
+    # Lazy list assignment: identifier[index] = value;
+    rules_ordered.append((
+        "lazy_list_assignment",
+        rule_seq(
+            rule_symbol("identifier"),
+            rule_string("["),
+            rule_symbol("_expression"),
+            rule_string("]"),
+            rule_string("="),
+            rule_symbol("_expression"),
+            rule_string(";"),
+        )
+    ))
+
+    # 8. Expressions
     rules_ordered.append((
         "_expression",
         rule_choice(
             rule_symbol("assignment_expression"),
             rule_symbol("binary_expression"),
             rule_symbol("unary_expression"),
+            rule_symbol("postfix_expression"),
             rule_symbol("cast_expression"),
             rule_symbol("call_expression"),
+            rule_symbol("index_expression"),
             rule_symbol("parenthesized_expression"),
             rule_symbol("vector_literal"),
             rule_symbol("rotation_literal"),
             rule_symbol("list_literal"),
-            rule_symbol("_identifier"),
+            rule_symbol("identifier"),
             rule_symbol("number"),
             rule_symbol("string"),
         )
     ))
 
-    # Assignment (lowest, right-associative) — level 0
     rules_ordered.append((
         "assignment_expression",
         rule_prec_right(
             0,
             rule_seq(
-                rule_field("left", rule_symbol("_identifier")),
+                rule_field("left", rule_symbol("identifier")),
                 rule_choice(
                     rule_string("="),
                     rule_string("+="),
@@ -278,7 +427,6 @@ def build_grammar():
         )
     ))
 
-    # Binary operators — levels 1 .. 10
     rules_ordered.append((
         "binary_expression",
         rule_choice(
@@ -293,21 +441,28 @@ def build_grammar():
             rule_prec_left(5, rule_seq(
                 rule_symbol("_expression"), rule_string("&"), rule_symbol("_expression"))),
             rule_prec_left(6, rule_seq(
-                rule_symbol("_expression"), rule_choice(rule_string("=="), rule_string("!=")), rule_symbol("_expression"))),
+                rule_symbol("_expression"),
+                rule_choice(rule_string("=="), rule_string("!=")),
+                rule_symbol("_expression"))),
             rule_prec_left(7, rule_seq(
-                rule_symbol("_expression"), rule_choice(rule_string("<"), rule_string("<="), rule_string(">"), rule_string(">=")), rule_symbol("_expression"))),
+                rule_symbol("_expression"),
+                rule_choice(rule_string("<"), rule_string("<="), rule_string(">"), rule_string(">=")),
+                rule_symbol("_expression"))),
             rule_prec_left(8, rule_seq(
-                rule_symbol("_expression"), rule_choice(rule_string("<<"), rule_string(">>")), rule_symbol("_expression"))),
+                rule_symbol("_expression"),
+                rule_choice(rule_string("<<"), rule_string(">>")),
+                rule_symbol("_expression"))),
             rule_prec_left(9, rule_seq(
                 rule_symbol("_expression"), rule_string("+"), rule_symbol("_expression"))),
             rule_prec_left(10, rule_seq(
                 rule_symbol("_expression"), rule_string("-"), rule_symbol("_expression"))),
             rule_prec_left(11, rule_seq(
-                rule_symbol("_expression"), rule_choice(rule_string("*"), rule_string("/"), rule_string("%")), rule_symbol("_expression"))),
+                rule_symbol("_expression"),
+                rule_choice(rule_string("*"), rule_string("/"), rule_string("%")),
+                rule_symbol("_expression"))),
         )
     ))
 
-    # Unary operators — level 12
     rules_ordered.append((
         "unary_expression",
         rule_prec(
@@ -325,7 +480,17 @@ def build_grammar():
         )
     ))
 
-    # Typecast — level 13
+    rules_ordered.append((
+        "postfix_expression",
+        rule_prec_left(
+            15,
+            rule_seq(
+                rule_symbol("_expression"),
+                rule_choice(rule_string("++"), rule_string("--")),
+            ),
+        )
+    ))
+
     rules_ordered.append((
         "cast_expression",
         rule_prec(
@@ -339,7 +504,6 @@ def build_grammar():
         )
     ))
 
-    # Parenthesized expression
     rules_ordered.append((
         "parenthesized_expression",
         rule_seq(
@@ -349,11 +513,10 @@ def build_grammar():
         )
     ))
 
-    # Function call
     rules_ordered.append((
         "call_expression",
         rule_seq(
-            rule_field("function", rule_symbol("_identifier")),
+            rule_field("function", rule_symbol("identifier")),
             rule_field("arguments", rule_symbol("argument_list")),
         )
     ))
@@ -373,7 +536,19 @@ def build_grammar():
         )
     ))
 
-    # Vector and rotation literals — angle brackets
+    rules_ordered.append((
+        "index_expression",
+        rule_prec(
+            14,
+            rule_seq(
+                rule_symbol("_expression"),
+                rule_string("["),
+                rule_symbol("_expression"),
+                rule_string("]"),
+            ),
+        )
+    ))
+
     rules_ordered.append((
         "vector_literal",
         rule_seq(
@@ -402,7 +577,6 @@ def build_grammar():
         )
     ))
 
-    # List literal — square brackets
     rules_ordered.append((
         "list_literal",
         rule_seq(
@@ -418,9 +592,7 @@ def build_grammar():
         )
     ))
 
-    # ------------------------------------------------------------------
-    # 8. Atoms
-    # ------------------------------------------------------------------
+    # 9. Atoms
     rules_ordered.append((
         "number",
         rule_pattern(r"\d+(\.\d+)?")
@@ -430,14 +602,12 @@ def build_grammar():
         "string",
         rule_seq(
             rule_string('"'),
-            rule_pattern(r'[^"]*'),
+            rule_pattern(r'([^"\\]|\\.)*'),
             rule_string('"'),
         )
     ))
 
-    # ------------------------------------------------------------------
-    # 9. Types
-    # ------------------------------------------------------------------
+    # 10. Types
     rules_ordered.append((
         "type",
         rule_choice(
@@ -451,11 +621,9 @@ def build_grammar():
         )
     ))
 
-    # ------------------------------------------------------------------
-    # 10. Identifier token
-    # ------------------------------------------------------------------
+    # 11. Identifier token — visible
     rules_ordered.append((
-        "_identifier",
+        "identifier",
         rule_pattern(r"[A-Za-z_][A-Za-z0-9_]*")
     ))
 
@@ -463,13 +631,15 @@ def build_grammar():
 
     grammar = {
         "name": "lsl",
-        "word": "_identifier",
+        "word": "identifier",
         "rules": rules,
         "extras": [
             rule_pattern(r"\s"),
-            rule_symbol("_comment"),
+            rule_symbol("comment"),
         ],
-        "conflicts": [],
+        "conflicts": [
+            ["lazy_list_assignment", "_expression"],
+        ],
         "externals": [],
         "inline": [],
     }
@@ -483,10 +653,7 @@ def main():
     start_rule = next(iter(grammar["rules"]))
     print(f"Start rule (first key in 'rules'): {start_rule!r}")
     if start_rule != "source_file":
-        raise SystemExit(
-            "ERROR: the first rule is not 'source_file'. "
-            "Tree-sitter will reject the grammar."
-        )
+        raise SystemExit("ERROR: first rule is not 'source_file'")
 
     out_path = pathlib.Path(__file__).parent / "grammar.json"
     out_path.write_text(json.dumps(grammar, indent=2), encoding="utf-8")
@@ -495,3 +662,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

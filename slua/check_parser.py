@@ -1,8 +1,4 @@
 # slua/check_parser.py
-"""
-Load slua.dll and parse a representative SLua script.
-"""
-
 import ctypes
 import pathlib
 import warnings
@@ -24,46 +20,47 @@ def main():
     library_path = here / "slua.dll"
 
     if not library_path.exists():
-        raise SystemExit(f"Shared library not found: {library_path}\nBuild it first with scripts\\generate-all.cmd")
+        raise SystemExit(f"Shared library not found: {library_path}")
 
     SLUA = language_from_shared_library(library_path, "slua")
     parser = Parser(SLUA)
 
-    sample = b"""
-local count: number = 0
+    sample_text = """
+-- Long strings, all bracket levels
+local a = [[plain long string]]
+local b = [=[contains ]] inside]=]
+local c = [==[contains ]=] inside]==]
 
-function state_entry()
-    ll.Say(0, "Hello, SLua!")
-    count = count + 1
+-- const declaration
+const PI = 3.14159
+const LIMIT: number = 100
+
+-- Type declarations
+type Point = { x: number, y: number }
+export type Predicate<T> = (T) -> boolean
+
+-- Generic function
+function identity<T>(v: T): T
+    return v
 end
 
-function touch_start(total_number: number)
-    if count > 0 then
-        ll.Say(0, "Touched!")
-    elseif count == 0 then
-        ll.Say(0, "First touch")
-    else
-        ll.Say(0, "Never reached")
-    end
-
-    for i = 1, 10 do
-        ll.Say(0, tostring(i))
-    end
-
-    local t = { x = 1, y = 2, [3] = "three" }
-    for k, v in t do
-        ll.Say(0, tostring(k) .. " = " .. tostring(v))
-    end
-
-    local x = 0
-    while x < 5 do
-        x += 1
-        if x == 3 then
-            continue
-        end
-    end
+-- Function attributes (name only)
+@native
+function fast(n: number): number
+    return n * 2
 end
+
+@checked
+function validated(n: number): number
+    return n
+end
+
+-- Declare statements
+declare version: string
+declare function warn<T...>(...: T...)
 """
+
+    sample = sample_text.encode("utf-8")
 
     tree = parser.parse(sample)
     root = tree.root_node

@@ -123,7 +123,7 @@ Best if your project already uses CMake. Add this to your `CMakeLists.txt`:
 include(FetchContent)
 
 FetchContent_Declare(tree-sitter-lsl-lsua
-    GIT_REPOSITORY https://github.com/<you>/tree-sitter-lsl-lsua.git
+    GIT_REPOSITORY https://github.com/MdONeilsl/tree-sitter-lsl-lsua.git
     GIT_TAG        v0.1.0)
 FetchContent_MakeAvailable(tree-sitter-lsl-lsua)
 
@@ -141,7 +141,7 @@ and set `-DTS_LSL_LSUA_BUILD_SLUA=OFF` (or the other way around).
 Best if you do not use CMake, or want a fixed version without network access.
 
 1. Download the archive for your platform from
-   <https://github.com/<you>/tree-sitter-lsl-lsua/releases>
+   <https://github.com/MdONeilsl/tree-sitter-lsl-lsua/releases>
    (e.g. `tree-sitter-lsl-lsua-windows-x64.zip`).
 2. Extract it. You get a single top-level folder:
    ```

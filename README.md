@@ -444,4 +444,5 @@ third-party notices.
 
 ---
 
-*Second Life, SL, and inSL are trademarks of Linden Research, Inc. miniwik is not affiliated with or sponsored by Linden Research.*
+*Second Life, SL, and inSL are trademarks of Linden Research, Inc. tree-sitter-lsl-slua
+ is not affiliated with or sponsored by Linden Research.*

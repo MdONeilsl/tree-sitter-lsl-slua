@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:        # allows manual re-runs from the Actions tab
 
 jobs:
   build-windows:
@@ -11,16 +12,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1. Download the standalone tree-sitter CLI (no Node.js).
+      # ---- Standalone tree-sitter CLI (no Node.js) ------------------
       - name: Download tree-sitter CLI
         shell: pwsh
         run: |
           $url = "https://github.com/tree-sitter/tree-sitter/releases/download/v0.27.2/tree-sitter-cli-windows-x64.zip"
           Invoke-WebRequest -Uri $url -OutFile tree-sitter-cli.zip
-          Expand-Archive tree-sitter-cli.zip -DestinationPath .
-          Move-Item tree-sitter.exe "${{ github.workspace }}\tree-sitter.exe"
+          Expand-Archive tree-sitter-cli.zip -DestinationPath ts-cli -Force
+          $exe = Get-ChildItem -Path ts-cli -Recurse -Filter tree-sitter.exe | Select-Object -First 1
+          if (-not $exe) { throw "tree-sitter.exe not found in downloaded archive" }
+          Copy-Item $exe.FullName "${{ github.workspace }}\tree-sitter.exe"
 
-      # 2. Regenerate grammar.json + parser.c from the Python generators.
+      - name: Verify CLI
+        shell: pwsh
+        run: .\tree-sitter.exe --version
+
+      # ---- LSL ------------------------------------------------------
       - name: Generate LSL parser
         shell: pwsh
         run: |
@@ -30,7 +37,6 @@ jobs:
           Copy-Item grammar.json src\grammar.json -Force
           Pop-Location
 
-      # 3. Build the shared library.
       - name: Build LSL DLL
         shell: pwsh
         run: |
@@ -38,15 +44,43 @@ jobs:
           ..\tree-sitter.exe build --output lsl.dll .
           Pop-Location
 
-      # 4. Assemble the drop-in folder.
+      # ---- SLua -----------------------------------------------------
+      - name: Generate SLua parser
+        shell: pwsh
+        run: |
+          python slua\generate_slua_grammar.py
+          Push-Location slua
+          ..\tree-sitter.exe generate grammar.json
+          Copy-Item grammar.json src\grammar.json -Force
+          Pop-Location
+
+      - name: Build SLua DLL
+        shell: pwsh
+        run: |
+          Push-Location slua
+          ..\tree-sitter.exe build --output slua.dll .
+          Pop-Location
+
+      # ---- Sanity check before packaging ----------------------------
+      - name: Verify both DLLs exist
+        shell: pwsh
+        run: |
+          $lsl  = Test-Path "lsl\lsl.dll"
+          $slua = Test-Path "slua\slua.dll"
+          Write-Host "lsl\lsl.dll  present = $lsl"
+          Write-Host "slua\slua.dll present = $slua"
+          if (-not ($lsl -and $slua)) {
+            throw "One or more DLLs missing. Assemble-dist would fail next."
+          }
+
+      # ---- Package --------------------------------------------------
       - name: Assemble dist
         shell: cmd
         run: scripts\assemble-dist.cmd
 
-      # 5. Archive and upload.
       - name: Create zip
         shell: pwsh
-        run: Compress-Archive -Path dist\* -DestinationPath tree-sitter-lsl-lsua-windows-x64.zip
+        run: Compress-Archive -Path dist\* -DestinationPath tree-sitter-lsl-lsua-windows-x64.zip -Force
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

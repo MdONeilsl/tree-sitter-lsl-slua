@@ -1,0 +1,84 @@
+# ---------------------------------------------------------------------------
+# Tree-sitter CLI — downloaded locally, platform-specific, never shipped
+# ---------------------------------------------------------------------------
+# The standalone CLI is obtained from
+#   https://github.com/tree-sitter/tree-sitter/releases
+# and is different per OS/arch. It is not a dependency of this package.
+/tree-sitter
+/tree-sitter.exe
+/tree-sitter-cli*.zip
+
+# ---------------------------------------------------------------------------
+# Intermediate grammar descriptions
+# ---------------------------------------------------------------------------
+/lsl/grammar.json
+/slua/grammar.json
+/lsl/src/grammar.json
+/slua/src/grammar.json
+
+# ---------------------------------------------------------------------------
+# Built shared libraries
+# ---------------------------------------------------------------------------
+*.dll
+*.so
+*.so.*
+*.dylib
+*.lib
+*.exp
+*.pdb
+*.ilk
+*.a
+
+# ---------------------------------------------------------------------------
+# Assembled release folder
+# ---------------------------------------------------------------------------
+/dist/
+
+# ---------------------------------------------------------------------------
+# CMake build output
+# ---------------------------------------------------------------------------
+/build/
+/build-*/
+/out/
+/cmake-build-*/
+CMakeUserPresets.json
+CMakeCache.txt
+CMakeFiles/
+Testing/
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+/.venv/
+/venv/
+/env/
+
+# ---------------------------------------------------------------------------
+# Editors and IDEs
+# ---------------------------------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.clangd/
+/compile_commands.json
+.cache/
+
+# ---------------------------------------------------------------------------
+# OS junk
+# ---------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+desktop.ini

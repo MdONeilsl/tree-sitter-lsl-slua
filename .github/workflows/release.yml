@@ -1,0 +1,70 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. Download the standalone tree-sitter CLI (no Node.js).
+      - name: Download tree-sitter CLI
+        shell: pwsh
+        run: |
+          $url = "https://github.com/tree-sitter/tree-sitter/releases/download/v0.27.2/tree-sitter-cli-windows-x64.zip"
+          Invoke-WebRequest -Uri $url -OutFile tree-sitter-cli.zip
+          Expand-Archive tree-sitter-cli.zip -DestinationPath .
+          Move-Item tree-sitter.exe "${{ github.workspace }}\tree-sitter.exe"
+
+      # 2. Regenerate grammar.json + parser.c from the Python generators.
+      - name: Generate LSL parser
+        shell: pwsh
+        run: |
+          python lsl\generate_lsl_grammar.py
+          Push-Location lsl
+          ..\tree-sitter.exe generate grammar.json
+          Copy-Item grammar.json src\grammar.json -Force
+          Pop-Location
+
+      # 3. Build the shared library.
+      - name: Build LSL DLL
+        shell: pwsh
+        run: |
+          Push-Location lsl
+          ..\tree-sitter.exe build --output lsl.dll .
+          Pop-Location
+
+      # 4. Assemble the drop-in folder.
+      - name: Assemble dist
+        shell: cmd
+        run: scripts\assemble-dist.cmd
+
+      # 5. Archive and upload.
+      - name: Create zip
+        shell: pwsh
+        run: Compress-Archive -Path dist\* -DestinationPath tree-sitter-lsl-lsua-windows-x64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: tree-sitter-lsl-lsua-windows-x64.zip
+
+  publish:
+    needs: build-windows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/windows-x64/tree-sitter-lsl-lsua-windows-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

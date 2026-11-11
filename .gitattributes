@@ -1,0 +1,20 @@
+# Normalise line endings to LF in the repository; check out per-OS.
+* text=auto eol=lf
+
+# Scripts remain LF everywhere so they run under any shell.
+*.cmd     text eol=crlf
+*.sh      text eol=lf
+*.py      text eol=lf
+
+# Binary artefacts
+*.dll     binary
+*.so      binary
+*.dylib   binary
+*.lib     binary
+*.exe     binary
+*.zip     binary
+*.tar.gz  binary
+
+# Generated sources are diffable but should not be hand-merged.
+lsl/src/parser.c    linguist-generated=true
+slua/src/parser.c   linguist-generated=true

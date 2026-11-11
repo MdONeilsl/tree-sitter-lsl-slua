@@ -141,7 +141,7 @@ and set `-DTS_LSL_LSUA_BUILD_SLUA=OFF` (or the other way around).
 Best if you do not use CMake, or want a fixed version without network access.
 
 1. Download the archive for your platform from
-   <https://github.com/MdONeilsl/tree-sitter-lsl-lsua/releases>
+   <https://github.com/MdONeilsl/tree-sitter-lsl-slua/releasess>
    (e.g. `tree-sitter-lsl-lsua-windows-x64.zip`).
 2. Extract it. You get a single top-level folder:
    ```
@@ -386,6 +386,28 @@ free(sexp);
 That s-expression deliberately omits positions. To see positions, use
 `ts_node_start_point()` and `ts_node_end_point()` on each node — see the
 walk example above.
+
+### Role node types
+
+Both grammars alias identifiers by their semantic role. A consumer can
+distinguish, for example, a variable name from a function name by
+`ts_node_type` alone:
+
+| LSL | SLua |
+|---|---|
+| `event_name` | `attribute_name` |
+| `function_name` | `declared_name` |
+| `label_name` | `function_name` |
+| `parameter_name` | `member_name` |
+| `state_name` | `member_object_name` |
+| `variable_name` | `method_name` |
+| | `parameter_name` |
+| | `table_field_name` |
+| | `type_identifier` |
+| | `type_param_name` |
+| | `variable_name` |
+
+Any identifier not covered by a role remains a plain `identifier`.
 
 ---
 

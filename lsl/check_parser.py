@@ -25,9 +25,8 @@ def main():
     LSL = language_from_shared_library(library_path, "lsl")
     parser = Parser(LSL)
 
-    sample_text = r"""
+    sample_text = """
 #define CHANNEL 12345
-#define OS(a) llOwnerSay(#a)
 
 integer gCounter = 0;
 list    gMyList  = [];
@@ -36,44 +35,29 @@ default
 {
     state_entry()
     {
-        #ifdef DEBUG
-            llOwnerSay("debug mode");
-        #else
-            llOwnerSay("release mode");
-        #endif
+        llOwnerSay("ready");
+        @top;
+        gCounter++;
+        if (gCounter < 3)
+            jump top;
+        state running;
+    }
 
-        #include "helpers.lsl"
-
-        // Switch / case (Firestorm preprocessor)
-        integer i = 2;
-        switch (i)
+    touch_start(integer num_detected)
+    {
+        integer i = 0;
+        while (i < num_detected)
         {
-            case 1:
-            {
-                OS("one");
-            }
-            case 2:
-            {
-                OS("two");
-                // fallthrough
-            }
-            case 3:
-            {
-                OS("three");
-                break;
-            }
-            default:
-            {
-                OS("default");
-            }
+            ++i;
         }
+    }
+}
 
-        // Lazy list assignment
-        gMyList[0] = 42;
-        gMyList[1] = "hello";
-
-        // Lazy list reading is standard index_expression
-        integer n = gMyList[0];
+state running
+{
+    state_entry()
+    {
+        llOwnerSay("running");
     }
 }
 """

@@ -8,11 +8,11 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -28,7 +28,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -67,11 +79,11 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -87,7 +99,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -112,6 +136,25 @@
         },
         {
           "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "attribute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "attribute_name",
           "named": true
         }
       ]
@@ -126,11 +169,11 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -146,7 +189,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -177,135 +232,7 @@
     }
   },
   {
-    "type": "comment",
-    "named": true,
-    "extra": true,
-    "fields": {}
-  },
-  {
-    "type": "const_declaration",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "argument_list",
-          "named": true
-        },
-        {
-          "type": "binary_expression",
-          "named": true
-        },
-        {
-          "type": "function_definition",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "if_then_else_expression",
-          "named": true
-        },
-        {
-          "type": "interpolated_string",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
-        {
-          "type": "parenthesized_expression",
-          "named": true
-        },
-        {
-          "type": "string",
-          "named": true
-        },
-        {
-          "type": "table_constructor",
-          "named": true
-        },
-        {
-          "type": "type_assertion",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "declare_statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "argument_list",
-          "named": true
-        },
-        {
-          "type": "binary_expression",
-          "named": true
-        },
-        {
-          "type": "function_body_decl",
-          "named": true
-        },
-        {
-          "type": "function_definition",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "if_then_else_expression",
-          "named": true
-        },
-        {
-          "type": "interpolated_string",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
-        {
-          "type": "parenthesized_expression",
-          "named": true
-        },
-        {
-          "type": "string",
-          "named": true
-        },
-        {
-          "type": "table_constructor",
-          "named": true
-        },
-        {
-          "type": "type_assertion",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "do_statement",
+    "type": "block",
     "named": true,
     "fields": {},
     "children": {
@@ -388,7 +315,7 @@
     }
   },
   {
-    "type": "export_type_declaration",
+    "type": "call_expression",
     "named": true,
     "fields": {},
     "children": {
@@ -400,7 +327,52 @@
           "named": true
         },
         {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "function_name",
+          "named": true
+        },
+        {
+          "type": "index_expression",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "comment",
+    "named": true,
+    "extra": true,
+    "fields": {}
+  },
+  {
+    "type": "const_declaration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
           "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
           "named": true
         },
         {
@@ -416,7 +388,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -440,26 +424,50 @@
           "named": true
         },
         {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
+          "named": true
+        },
+        {
           "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable_name",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "expression_statement",
+    "type": "declare_statement",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
-          "type": "argument_list",
+          "type": "attribute",
           "named": true
         },
         {
           "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "declared_name",
+          "named": true
+        },
+        {
+          "type": "function_body_decl",
           "named": true
         },
         {
@@ -475,7 +483,208 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
+          "named": true
+        },
+        {
+          "type": "method_name",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "table_constructor",
+          "named": true
+        },
+        {
+          "type": "table_field_name",
+          "named": true
+        },
+        {
+          "type": "type_assertion",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_param_name",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "do_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "export_type_declaration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "if_then_else_expression",
+          "named": true
+        },
+        {
+          "type": "index_expression",
+          "named": true
+        },
+        {
+          "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "table_constructor",
+          "named": true
+        },
+        {
+          "type": "type_assertion",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_param_name",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expression_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "if_then_else_expression",
+          "named": true
+        },
+        {
+          "type": "index_expression",
+          "named": true
+        },
+        {
+          "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -514,51 +723,15 @@
       "required": true,
       "types": [
         {
-          "type": "argument_list",
-          "named": true
-        },
-        {
-          "type": "assignment_statement",
-          "named": true
-        },
-        {
           "type": "binary_expression",
           "named": true
         },
         {
-          "type": "break_statement",
+          "type": "block",
           "named": true
         },
         {
-          "type": "const_declaration",
-          "named": true
-        },
-        {
-          "type": "continue_statement",
-          "named": true
-        },
-        {
-          "type": "declare_statement",
-          "named": true
-        },
-        {
-          "type": "do_statement",
-          "named": true
-        },
-        {
-          "type": "export_type_declaration",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_statement",
-          "named": true
-        },
-        {
-          "type": "function_declaration",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -570,11 +743,11 @@
           "named": true
         },
         {
-          "type": "if_statement",
+          "type": "if_then_else_expression",
           "named": true
         },
         {
-          "type": "if_then_else_expression",
+          "type": "index_expression",
           "named": true
         },
         {
@@ -582,11 +755,11 @@
           "named": true
         },
         {
-          "type": "local_declaration",
+          "type": "member_access_expression",
           "named": true
         },
         {
-          "type": "local_function_declaration",
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -595,14 +768,6 @@
         },
         {
           "type": "parenthesized_expression",
-          "named": true
-        },
-        {
-          "type": "repeat_statement",
-          "named": true
-        },
-        {
-          "type": "return_statement",
           "named": true
         },
         {
@@ -618,19 +783,11 @@
           "named": true
         },
         {
-          "type": "type_declaration",
-          "named": true
-        },
-        {
-          "type": "type_function_declaration",
-          "named": true
-        },
-        {
           "type": "unary_expression",
           "named": true
         },
         {
-          "type": "while_statement",
+          "type": "variable_name",
           "named": true
         }
       ]
@@ -645,51 +802,15 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
-          "named": true
-        },
-        {
-          "type": "assignment_statement",
-          "named": true
-        },
-        {
           "type": "binary_expression",
           "named": true
         },
         {
-          "type": "break_statement",
+          "type": "block",
           "named": true
         },
         {
-          "type": "const_declaration",
-          "named": true
-        },
-        {
-          "type": "continue_statement",
-          "named": true
-        },
-        {
-          "type": "declare_statement",
-          "named": true
-        },
-        {
-          "type": "do_statement",
-          "named": true
-        },
-        {
-          "type": "export_type_declaration",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_statement",
-          "named": true
-        },
-        {
-          "type": "function_declaration",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -701,11 +822,11 @@
           "named": true
         },
         {
-          "type": "if_statement",
+          "type": "if_then_else_expression",
           "named": true
         },
         {
-          "type": "if_then_else_expression",
+          "type": "index_expression",
           "named": true
         },
         {
@@ -713,11 +834,11 @@
           "named": true
         },
         {
-          "type": "local_declaration",
+          "type": "member_access_expression",
           "named": true
         },
         {
-          "type": "local_function_declaration",
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -725,15 +846,11 @@
           "named": true
         },
         {
+          "type": "parameter",
+          "named": true
+        },
+        {
           "type": "parenthesized_expression",
-          "named": true
-        },
-        {
-          "type": "repeat_statement",
-          "named": true
-        },
-        {
-          "type": "return_statement",
           "named": true
         },
         {
@@ -749,19 +866,15 @@
           "named": true
         },
         {
-          "type": "type_declaration",
+          "type": "type_identifier",
           "named": true
         },
         {
-          "type": "type_function_declaration",
+          "type": "type_table_field",
           "named": true
         },
         {
           "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "while_statement",
           "named": true
         }
       ]
@@ -776,11 +889,11 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -796,11 +909,27 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
           "named": true
         },
         {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
+          "named": true
+        },
+        {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "parameter",
           "named": true
         },
         {
@@ -817,6 +946,14 @@
         },
         {
           "type": "type_assertion",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
           "named": true
         },
         {
@@ -835,11 +972,15 @@
       "required": true,
       "types": [
         {
-          "type": "argument_list",
+          "type": "attribute",
           "named": true
         },
         {
           "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
           "named": true
         },
         {
@@ -851,6 +992,10 @@
           "named": true
         },
         {
+          "type": "function_name",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -859,7 +1004,27 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "member_name",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
+          "named": true
+        },
+        {
+          "type": "method_name",
           "named": true
         },
         {
@@ -880,6 +1045,18 @@
         },
         {
           "type": "type_assertion",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_param_name",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
           "named": true
         },
         {
@@ -898,11 +1075,15 @@
       "required": true,
       "types": [
         {
-          "type": "argument_list",
+          "type": "attribute",
           "named": true
         },
         {
           "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
           "named": true
         },
         {
@@ -922,7 +1103,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -943,6 +1136,18 @@
         },
         {
           "type": "type_assertion",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_param_name",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
           "named": true
         },
         {
@@ -961,51 +1166,15 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
-          "named": true
-        },
-        {
-          "type": "assignment_statement",
-          "named": true
-        },
-        {
           "type": "binary_expression",
           "named": true
         },
         {
-          "type": "break_statement",
+          "type": "block",
           "named": true
         },
         {
-          "type": "const_declaration",
-          "named": true
-        },
-        {
-          "type": "continue_statement",
-          "named": true
-        },
-        {
-          "type": "declare_statement",
-          "named": true
-        },
-        {
-          "type": "do_statement",
-          "named": true
-        },
-        {
-          "type": "export_type_declaration",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_statement",
-          "named": true
-        },
-        {
-          "type": "function_declaration",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1017,11 +1186,11 @@
           "named": true
         },
         {
-          "type": "if_statement",
+          "type": "if_then_else_expression",
           "named": true
         },
         {
-          "type": "if_then_else_expression",
+          "type": "index_expression",
           "named": true
         },
         {
@@ -1029,11 +1198,11 @@
           "named": true
         },
         {
-          "type": "local_declaration",
+          "type": "member_access_expression",
           "named": true
         },
         {
-          "type": "local_function_declaration",
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1042,14 +1211,6 @@
         },
         {
           "type": "parenthesized_expression",
-          "named": true
-        },
-        {
-          "type": "repeat_statement",
-          "named": true
-        },
-        {
-          "type": "return_statement",
           "named": true
         },
         {
@@ -1065,19 +1226,7 @@
           "named": true
         },
         {
-          "type": "type_declaration",
-          "named": true
-        },
-        {
-          "type": "type_function_declaration",
-          "named": true
-        },
-        {
           "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "while_statement",
           "named": true
         }
       ]
@@ -1092,11 +1241,11 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1112,7 +1261,90 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "table_constructor",
+          "named": true
+        },
+        {
+          "type": "type_assertion",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "index_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "if_then_else_expression",
+          "named": true
+        },
+        {
+          "type": "index_expression",
+          "named": true
+        },
+        {
+          "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1151,11 +1383,11 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1171,7 +1403,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1210,11 +1454,11 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1230,7 +1474,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1254,7 +1510,19 @@
           "named": true
         },
         {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
+          "named": true
+        },
+        {
           "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable_name",
           "named": true
         }
       ]
@@ -1269,11 +1537,15 @@
       "required": true,
       "types": [
         {
-          "type": "argument_list",
+          "type": "attribute",
           "named": true
         },
         {
           "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1285,6 +1557,10 @@
           "named": true
         },
         {
+          "type": "function_name",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -1293,7 +1569,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1317,7 +1605,101 @@
           "named": true
         },
         {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_param_name",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
+          "named": true
+        },
+        {
           "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "member_access_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "index_expression",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "member_name",
+          "named": true
+        },
+        {
+          "type": "member_object_name",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "method_call_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "argument_list",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "index_expression",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "member_object_name",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
+          "named": true
+        },
+        {
+          "type": "method_name",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
           "named": true
         }
       ]
@@ -1329,19 +1711,19 @@
     "fields": {}
   },
   {
-    "type": "parenthesized_expression",
+    "type": "parameter",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1357,7 +1739,102 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "parameter_name",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "table_constructor",
+          "named": true
+        },
+        {
+          "type": "type_assertion",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "parenthesized_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "if_then_else_expression",
+          "named": true
+        },
+        {
+          "type": "index_expression",
+          "named": true
+        },
+        {
+          "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1396,51 +1873,15 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
-          "named": true
-        },
-        {
-          "type": "assignment_statement",
-          "named": true
-        },
-        {
           "type": "binary_expression",
           "named": true
         },
         {
-          "type": "break_statement",
+          "type": "block",
           "named": true
         },
         {
-          "type": "const_declaration",
-          "named": true
-        },
-        {
-          "type": "continue_statement",
-          "named": true
-        },
-        {
-          "type": "declare_statement",
-          "named": true
-        },
-        {
-          "type": "do_statement",
-          "named": true
-        },
-        {
-          "type": "export_type_declaration",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_statement",
-          "named": true
-        },
-        {
-          "type": "function_declaration",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1452,11 +1893,11 @@
           "named": true
         },
         {
-          "type": "if_statement",
+          "type": "if_then_else_expression",
           "named": true
         },
         {
-          "type": "if_then_else_expression",
+          "type": "index_expression",
           "named": true
         },
         {
@@ -1464,11 +1905,11 @@
           "named": true
         },
         {
-          "type": "local_declaration",
+          "type": "member_access_expression",
           "named": true
         },
         {
-          "type": "local_function_declaration",
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1477,14 +1918,6 @@
         },
         {
           "type": "parenthesized_expression",
-          "named": true
-        },
-        {
-          "type": "repeat_statement",
-          "named": true
-        },
-        {
-          "type": "return_statement",
           "named": true
         },
         {
@@ -1500,19 +1933,7 @@
           "named": true
         },
         {
-          "type": "type_declaration",
-          "named": true
-        },
-        {
-          "type": "type_function_declaration",
-          "named": true
-        },
-        {
           "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "while_statement",
           "named": true
         }
       ]
@@ -1527,11 +1948,11 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1547,7 +1968,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1685,11 +2118,11 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1705,7 +2138,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1722,6 +2167,10 @@
         },
         {
           "type": "table_constructor",
+          "named": true
+        },
+        {
+          "type": "table_field_name",
           "named": true
         },
         {
@@ -1744,11 +2193,11 @@
       "required": true,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1764,7 +2213,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1785,6 +2246,14 @@
         },
         {
           "type": "type_assertion",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
           "named": true
         },
         {
@@ -1803,11 +2272,11 @@
       "required": true,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1823,7 +2292,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1844,6 +2325,18 @@
         },
         {
           "type": "type_assertion",
+          "named": true
+        },
+        {
+          "type": "type_identifier",
+          "named": true
+        },
+        {
+          "type": "type_param_name",
+          "named": true
+        },
+        {
+          "type": "type_table_field",
           "named": true
         },
         {
@@ -1866,7 +2359,7 @@
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "function_name",
           "named": true
         }
       ]
@@ -1877,15 +2370,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "types": [
         {
-          "type": "argument_list",
+          "type": "binary_expression",
           "named": true
         },
         {
-          "type": "binary_expression",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1901,7 +2394,19 @@
           "named": true
         },
         {
+          "type": "index_expression",
+          "named": true
+        },
+        {
           "type": "interpolated_string",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -1940,51 +2445,15 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
-          "named": true
-        },
-        {
-          "type": "assignment_statement",
-          "named": true
-        },
-        {
           "type": "binary_expression",
           "named": true
         },
         {
-          "type": "break_statement",
+          "type": "block",
           "named": true
         },
         {
-          "type": "const_declaration",
-          "named": true
-        },
-        {
-          "type": "continue_statement",
-          "named": true
-        },
-        {
-          "type": "declare_statement",
-          "named": true
-        },
-        {
-          "type": "do_statement",
-          "named": true
-        },
-        {
-          "type": "export_type_declaration",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_statement",
-          "named": true
-        },
-        {
-          "type": "function_declaration",
+          "type": "call_expression",
           "named": true
         },
         {
@@ -1996,11 +2465,11 @@
           "named": true
         },
         {
-          "type": "if_statement",
+          "type": "if_then_else_expression",
           "named": true
         },
         {
-          "type": "if_then_else_expression",
+          "type": "index_expression",
           "named": true
         },
         {
@@ -2008,11 +2477,11 @@
           "named": true
         },
         {
-          "type": "local_declaration",
+          "type": "member_access_expression",
           "named": true
         },
         {
-          "type": "local_function_declaration",
+          "type": "method_call_expression",
           "named": true
         },
         {
@@ -2021,14 +2490,6 @@
         },
         {
           "type": "parenthesized_expression",
-          "named": true
-        },
-        {
-          "type": "repeat_statement",
-          "named": true
-        },
-        {
-          "type": "return_statement",
           "named": true
         },
         {
@@ -2044,19 +2505,7 @@
           "named": true
         },
         {
-          "type": "type_declaration",
-          "named": true
-        },
-        {
-          "type": "type_function_declaration",
-          "named": true
-        },
-        {
           "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "while_statement",
           "named": true
         }
       ]
@@ -2235,8 +2684,16 @@
     "named": false
   },
   {
+    "type": "attribute_name",
+    "named": true
+  },
+  {
     "type": "break_statement",
     "named": true
+  },
+  {
+    "type": "class",
+    "named": false
   },
   {
     "type": "close",
@@ -2253,6 +2710,10 @@
   {
     "type": "declare",
     "named": false
+  },
+  {
+    "type": "declared_name",
+    "named": true
   },
   {
     "type": "do",
@@ -2275,6 +2736,10 @@
     "named": false
   },
   {
+    "type": "extends",
+    "named": false
+  },
+  {
     "type": "false",
     "named": false
   },
@@ -2285,6 +2750,10 @@
   {
     "type": "function",
     "named": false
+  },
+  {
+    "type": "function_name",
+    "named": true
   },
   {
     "type": "identifier",
@@ -2307,6 +2776,18 @@
     "named": true
   },
   {
+    "type": "member_name",
+    "named": true
+  },
+  {
+    "type": "member_object_name",
+    "named": true
+  },
+  {
+    "type": "method_name",
+    "named": true
+  },
+  {
     "type": "nil",
     "named": false
   },
@@ -2319,12 +2800,20 @@
     "named": false
   },
   {
+    "type": "parameter_name",
+    "named": true
+  },
+  {
     "type": "repeat",
     "named": false
   },
   {
     "type": "return",
     "named": false
+  },
+  {
+    "type": "table_field_name",
+    "named": true
   },
   {
     "type": "then",
@@ -2339,12 +2828,28 @@
     "named": false
   },
   {
+    "type": "type_identifier",
+    "named": true
+  },
+  {
+    "type": "type_param_name",
+    "named": true
+  },
+  {
+    "type": "type_table_field",
+    "named": true
+  },
+  {
     "type": "typeof",
     "named": false
   },
   {
     "type": "until",
     "named": false
+  },
+  {
+    "type": "variable_name",
+    "named": true
   },
   {
     "type": "while",

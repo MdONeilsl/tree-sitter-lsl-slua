@@ -1,0 +1,1 @@
+{"must_contain": ["function_declaration", "local_function_declaration", "function_name", "parameter", "parameter_name"]}

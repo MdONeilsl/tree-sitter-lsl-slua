@@ -1,0 +1,7 @@
+local count = 0
+const PI = 3.14
+
+function state_entry()
+    count = count + 1
+    ll.Say(0, "Hello")
+end

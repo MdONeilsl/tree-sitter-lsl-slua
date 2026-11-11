@@ -1,0 +1,3 @@
+{
+  "must_contain": ["comment", "local_declaration"]
+}

@@ -1,0 +1,19 @@
+local a = 1
+local b = 2
+local r
+
+r = a or b
+r = a and b
+r = a == b
+r = a ~= b
+r = a < b
+r = a <= b
+r = a > b
+r = a >= b
+r = a .. b
+r = a + b
+r = a - b
+r = a * b
+r = a / b
+r = a // b
+r = a % b

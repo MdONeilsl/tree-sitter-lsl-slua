@@ -105,9 +105,21 @@ def rules():
             rule_symbol("_expression"),
         )),
 
-        # `expr :: Type` — trailing type assertion.
+                # `expr :: Type` — type assertion. In Luau the left side is any
+        # expression; the atom forms (`"hi" :: string`, `42 :: number`,
+        # `true :: boolean`) are common in typed code and must be
+        # accepted, not just suffixed expressions.
         ("type_assertion", rule_seq(
-            rule_symbol("_suffixed_expression"),
+            rule_choice(
+                rule_symbol("_suffixed_expression"),
+                rule_symbol("number"),
+                rule_symbol("string"),
+                rule_symbol("interpolated_string"),
+                rule_string("true"),
+                rule_string("false"),
+                rule_string("nil"),
+                rule_string("..."),
+            ),
             rule_string("::"),
             rule_symbol("_type"),
         )),

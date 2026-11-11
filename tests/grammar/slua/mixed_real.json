@@ -1,0 +1,1 @@
+{"must_contain": ["function_declaration", "type_declaration", "local_declaration", "attribute", "member_access_expression", "call_expression", "if_statement", "interpolated_string"]}

@@ -6,6 +6,11 @@
 *.sh      text eol=lf
 *.py      text eol=lf
 
+# Test fixtures must be identical on every platform so byte offsets match.
+*.lsl     text eol=lf
+*.slua    text eol=lf
+*.json    text eol=lf
+
 # Binary artefacts
 *.dll     binary
 *.so      binary

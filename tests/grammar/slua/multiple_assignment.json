@@ -1,0 +1,3 @@
+{
+  "must_contain": ["assignment_statement", "variable_name"]
+}

@@ -1,0 +1,1 @@
+{"must_contain": ["state_definition", "state_transition", "event_handler", "event_name", "state_name"]}

@@ -1,0 +1,4 @@
+local name = "world"
+local greeting = `hello {name}`
+local combined = `a{1}b{2}c`
+local plain = `no interpolation`

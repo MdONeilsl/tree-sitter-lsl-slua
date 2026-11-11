@@ -1,0 +1,1 @@
+{"must_contain": ["type_declaration", "type_identifier", "type_table_field", "type_table_prop"]}

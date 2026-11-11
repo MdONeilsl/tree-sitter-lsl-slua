@@ -1,0 +1,10 @@
+local a = ""
+local b = "hello"
+local c = 'single'
+local d = "with \n newline"
+local e = "with \" quote"
+local f = "with \\ backslash"
+local g = [[long string]]
+local h = [=[level 1 with ]] inside]=]
+local i = [==[level 2 with ]=] inside]==]
+local j = [[]]

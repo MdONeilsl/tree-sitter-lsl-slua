@@ -1,0 +1,5 @@
+local a = 5
+local b
+b = -a
+b = not a
+b = #a

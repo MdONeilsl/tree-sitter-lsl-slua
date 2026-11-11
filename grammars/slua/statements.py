@@ -57,15 +57,17 @@ def rules():
             rule_repeat(rule_seq(rule_string(","), rule_symbol("_binding"))),
         )),
 
-        # binding: NAME [: Type] [<const>|<close>]
+        # binding: NAME [: Type]
+        #
+        # The `<const>` / `<close>` attribute from Lua 5.4 is intentionally
+        # NOT supported here: SLua uses the `const` keyword instead (see
+        # `const_declaration`), and the `<` prefix falsely entered the
+        # follow set of `_type_reference`, which caused `local x: Array<T>`
+        # to stop at `Array` (the `<` was consumed as if it were `<const>`)
+        # and error on `<T>`.
         ("_binding", rule_seq(
             rule_alias(rule_symbol("identifier"), "variable_name"),
             rule_optional(rule_seq(rule_string(":"), rule_symbol("_type"))),
-            rule_optional(rule_seq(
-                rule_string("<"),
-                rule_choice(rule_string("const"), rule_string("close")),
-                rule_string(">"),
-            )),
         )),
 
         # -- Type declarations -------------------------------------------

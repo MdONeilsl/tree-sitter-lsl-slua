@@ -1,0 +1,1 @@
+{"must_contain": ["export_type_declaration", "type_param_name", "declare_statement", "declared_name"]}

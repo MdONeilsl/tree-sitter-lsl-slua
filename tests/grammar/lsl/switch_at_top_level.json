@@ -1,0 +1,4 @@
+{
+  "expect_error": true,
+  "note": "switch is a statement, not a top-level declaration"
+}

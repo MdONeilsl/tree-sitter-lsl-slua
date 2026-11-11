@@ -1,0 +1,4 @@
+local x = 42
+local y = x :: number
+local z = (x :: number) + 1
+local s = "hi" :: string

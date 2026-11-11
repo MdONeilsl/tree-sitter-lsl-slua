@@ -12,9 +12,9 @@ from ..helpers import (
 
 def rules():
     return [
-        # source_file MUST be the first rule — Tree-sitter uses it as the start rule.
         ("source_file", rule_repeat(rule_choice(
             rule_symbol("global_declaration"),
+            rule_symbol("function_declaration"),
             rule_symbol("state_definition"),
             rule_symbol("preproc_directive"),
         ))),
@@ -22,6 +22,13 @@ def rules():
         # A global declaration is a variable declared at script scope.
         # The wrapper node distinguishes it from a local declaration.
         ("global_declaration", rule_symbol("variable_declaration")),
+
+        ("function_declaration", rule_seq(
+            rule_symbol("type"),
+            rule_alias(rule_symbol("identifier"), "function_name"),
+            rule_symbol("parameter_list"),
+            rule_symbol("block"),
+        )),
 
         ("state_definition", rule_seq(
             rule_choice(

@@ -1,0 +1,15 @@
+@native
+function fast(x: number): number
+    return x * 2
+end
+
+@checked
+function validated(x: number): number
+    return x
+end
+
+@native
+@checked
+function both(x: number): number
+    return x
+end

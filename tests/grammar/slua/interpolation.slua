@@ -1,0 +1,2 @@
+local count = 42
+local msg = `count = {count}`

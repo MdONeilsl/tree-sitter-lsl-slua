@@ -1,0 +1,33 @@
+local i = 0
+while i < 10 do
+    i += 1
+end
+
+repeat
+    i -= 1
+until i <= 0
+
+for n = 1, 10 do
+    print(n)
+end
+
+for n = 1, 10, 2 do
+    print(n)
+end
+
+for k, v in pairs({}) do
+    print(k, v)
+end
+
+do
+    local x = 1
+end
+
+for n = 1, 100 do
+    if n % 2 == 0 then
+        continue
+    end
+    if n > 50 then
+        break
+    end
+end

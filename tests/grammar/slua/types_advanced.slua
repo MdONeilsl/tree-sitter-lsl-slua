@@ -1,0 +1,8 @@
+export type Public = { call: (number) -> number }
+
+type Generic<T> = { value: T }
+type WithDefault<T = number> = { value: T }
+type Variadic<T...> = (T...) -> ()
+
+declare version: string
+declare function warn<T...>(...: T...)

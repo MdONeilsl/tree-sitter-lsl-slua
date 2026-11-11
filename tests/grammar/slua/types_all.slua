@@ -1,0 +1,13 @@
+type A = number
+type B = string
+type C = boolean
+type D = nil
+type E = { x: number, y: number }
+type F = { number }
+type G = (number) -> string
+type H = (number, string) -> (boolean, number)
+type I = Array<number>
+type J = Pair<string, number>
+type K = Point?
+type L = number | string
+type M = number & string

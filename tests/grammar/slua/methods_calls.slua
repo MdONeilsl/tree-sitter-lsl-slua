@@ -1,0 +1,9 @@
+local obj = { field = 1 }
+local math_like = { sqrt = function(x) return x end }
+
+local a = obj.field
+local b = math_like.sqrt(4)
+local c = obj:field()
+
+obj.field = 2
+print(obj.field)

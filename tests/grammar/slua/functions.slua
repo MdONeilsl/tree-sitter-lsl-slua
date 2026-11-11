@@ -1,0 +1,27 @@
+local function add(a, b)
+    return a + b
+end
+
+local function identity<T>(v: T): T
+    return v
+end
+
+function topLevel(a, b)
+    return a + b
+end
+
+function typed(x: number, y: number): number
+    return x + y
+end
+
+function withGeneric<T>(v: T): T
+    return v
+end
+
+function variadic(...: number): number
+    return 0
+end
+
+function multiReturn(): (number, string)
+    return 1, "one"
+end

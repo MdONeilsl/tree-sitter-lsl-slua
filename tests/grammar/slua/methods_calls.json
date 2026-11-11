@@ -1,0 +1,1 @@
+{"must_contain": ["member_access_expression", "method_call_expression", "call_expression", "member_object_name", "member_name", "method_name"]}

@@ -1,0 +1,8 @@
+declare version: string
+declare function warn<T...>(...: T...)
+declare function assert(cond: boolean): boolean
+declare class Folder extends Instance
+    ["Name"]: string
+    [number]: string
+    function Clone(self): Folder
+end

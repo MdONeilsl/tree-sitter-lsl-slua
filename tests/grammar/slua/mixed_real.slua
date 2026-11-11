@@ -1,0 +1,28 @@
+-- Real-world-ish SLua script
+type Point = { x: number, y: number }
+export type Handler<T> = (T) -> boolean
+
+local gCount = 0
+const PI = 3.14159
+
+local point: Point = { x = 1, y = 2 }
+local handler: Handler<number> = nil
+
+@native
+function distance(a: Point, b: Point): number
+    local dx = a.x - b.x
+    local dy = a.y - b.y
+    return math.sqrt(dx * dx + dy * dy)
+end
+
+function state_entry()
+    local msg = `count = {gCount}`
+    ll.Say(0, msg)
+    gCount += 1
+end
+
+function touch_start(n: number)
+    if n > 0 then
+        ll.Say(0, "touched")
+    end
+end

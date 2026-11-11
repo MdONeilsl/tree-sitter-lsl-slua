@@ -1,0 +1,1 @@
+{"must_contain": ["local_declaration", "const_declaration", "variable_name"]}

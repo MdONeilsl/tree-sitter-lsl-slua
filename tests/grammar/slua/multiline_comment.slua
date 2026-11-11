@@ -1,0 +1,13 @@
+--[[]]
+local a = 1
+
+--[[ short ]]
+local b = 2
+
+--[[ multi
+     line
+     comment ]]
+local c = 3
+
+--[=[ level 1 ]=]
+local d = 4

@@ -12,7 +12,6 @@ from ..helpers import (
 
 
 def statement_alternatives():
-    """All statement node types — used to build `_statement` and `_body`."""
     return [
         rule_symbol("variable_declaration"),
         rule_symbol("expression_statement"),
@@ -26,6 +25,7 @@ def statement_alternatives():
         rule_symbol("label_statement"),
         rule_symbol("lazy_list_assignment"),
         rule_symbol("break_statement"),
+        rule_symbol("continue_statement"),      # new
         rule_symbol("switch_statement"),
         rule_symbol("preproc_directive"),
         rule_string(";"),
@@ -99,23 +99,30 @@ def rules():
             rule_string(";"),
         )),
 
+        # for (init; cond; incr) — each of the three parts is optional;
+        # `for (; ; )` is valid (infinite loop, exited with `break`).
         ("for_statement", rule_seq(
             rule_string("for"),
             rule_string("("),
-            rule_alias(rule_symbol("identifier"), "variable_name"),
-            rule_string("="),
-            rule_symbol("_expression"),
+            rule_optional(rule_seq(
+                rule_alias(rule_symbol("identifier"), "variable_name"),
+                rule_string("="),
+                rule_symbol("_expression"),
+            )),
             rule_string(";"),
-            rule_symbol("_expression"),
+            rule_optional(rule_symbol("_expression")),
             rule_string(";"),
-            rule_symbol("_expression"),
+            rule_optional(rule_symbol("_expression")),
             rule_string(")"),
             rule_symbol("_body"),
         )),
 
         ("state_transition", rule_seq(
             rule_string("state"),
-            rule_alias(rule_symbol("identifier"), "state_name"),
+            rule_choice(
+                rule_alias(rule_symbol("identifier"), "state_name"),
+                rule_alias(rule_string("default"), "state_name"),
+            ),
             rule_string(";"),
         )),
 
@@ -143,6 +150,7 @@ def rules():
         )),
 
         ("break_statement", rule_seq(rule_string("break"), rule_string(";"))),
+        ("continue_statement", rule_seq(rule_string("continue"), rule_string(";"))),
 
         ("switch_statement", rule_seq(
             rule_string("switch"),

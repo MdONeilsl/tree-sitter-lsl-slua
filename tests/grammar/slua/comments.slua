@@ -1,0 +1,16 @@
+-- single line
+
+--[[ block ]]
+
+--[[
+   multi
+   line
+]]
+
+--[=[ level 1 ]=]
+
+--[==[ level 2 ]==]
+
+--[[]]
+
+local x = 1 -- trailing

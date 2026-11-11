@@ -96,10 +96,10 @@ def rules():
             rule_seq(
                 rule_string("{"),
                 rule_optional(rule_seq(
-                    rule_symbol("_type_table_prop"),
+                    rule_symbol("type_table_prop"),
                     rule_repeat(rule_seq(
                         rule_choice(rule_string(","), rule_string(";")),
-                        rule_symbol("_type_table_prop"),
+                        rule_symbol("type_table_prop"),
                     )),
                     rule_choice(rule_string(","), rule_string(";"), rule_optional(rule_string(","))),
                 )),
@@ -107,7 +107,7 @@ def rules():
             ),
         )),
 
-        ("_type_table_prop", rule_choice(
+        ("type_table_prop", rule_choice(
             # Computed key: `[K]: V` — K is a full type.
             rule_seq(rule_string("["), rule_symbol("_type"), rule_string("]"), rule_string(":"), rule_symbol("_type")),
             # Named key: `name: V` — name is a field of the struct type.

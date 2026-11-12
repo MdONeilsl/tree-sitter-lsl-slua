@@ -2,8 +2,16 @@
 import ctypes
 import pathlib
 import warnings
+import sys
 
 from tree_sitter import Language, Parser
+
+
+
+def _lib_ext() -> str:
+    if sys.platform == "win32":   return ".dll"
+    if sys.platform == "darwin":  return ".dylib"
+    return ".so"
 
 
 def language_from_shared_library(library_path, language_name):
@@ -17,10 +25,15 @@ def language_from_shared_library(library_path, language_name):
 
 def main():
     here = pathlib.Path(__file__).resolve().parent
-    library_path = here / "slua.dll"
+    library_path = here / f"lsl{_lib_ext()}"
 
     if not library_path.exists():
-        raise SystemExit(f"Shared library not found: {library_path}")
+        raise SystemExit(
+            f"Shared library not found: {library_path}\n"
+            "Build it first:\n"
+            "  Windows:  scripts\\generate-all.cmd\n"
+            "  Unix:     bash scripts/generate-all.sh"
+        )
 
     SLUA = language_from_shared_library(library_path, "slua")
     parser = Parser(SLUA)

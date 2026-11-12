@@ -1,19 +1,17 @@
 cmake_minimum_required(VERSION 3.16)
 
-# ---------------------------------------------------------------------------
 # Only call project() when this is the top-level build.
 # FetchContent_MakeAvailable() and add_subdirectory() set CMAKE_SOURCE_DIR
 # to the parent, so this block is skipped in those modes.
-# ---------------------------------------------------------------------------
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-    project(tree-sitter-lsl-lsua VERSION 0.1.0 LANGUAGES C)
+    project(tree-sitter-lsl-slua VERSION 0.3.0 LANGUAGES C)
 endif()
 
 # ---------------------------------------------------------------------------
 # Options
 # ---------------------------------------------------------------------------
-option(TS_LSL_LSUA_BUILD_LSL  "Build the LSL parser target"  ON)
-option(TS_LSL_LSUA_BUILD_SLUA "Build the SLua parser target" ON)
+option(TS_LSL_SLUA_BUILD_LSL  "Build the LSL parser target"  ON)
+option(TS_LSL_SLUA_BUILD_SLUA "Build the SLua parser target" ON)
 
 # ---------------------------------------------------------------------------
 # Tree-sitter runtime
@@ -47,6 +45,8 @@ function(ts_define_grammar name)
 
     add_library(${target} STATIC "${CMAKE_CURRENT_SOURCE_DIR}/${name}/src/parser.c")
 
+    # SLua has an external scanner; include it when present so a consumer
+    # who builds via add_subdirectory gets a complete parser.
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${name}/src/scanner.c")
         target_sources(${target} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/${name}/src/scanner.c")
     endif()
@@ -66,10 +66,10 @@ endfunction()
 # ---------------------------------------------------------------------------
 # Define targets
 # ---------------------------------------------------------------------------
-if(TS_LSL_LSUA_BUILD_LSL)
+if(TS_LSL_SLUA_BUILD_LSL)
     ts_define_grammar(lsl)
 endif()
 
-if(TS_LSL_LSUA_BUILD_SLUA)
+if(TS_LSL_SLUA_BUILD_SLUA)
     ts_define_grammar(slua)
 endif()

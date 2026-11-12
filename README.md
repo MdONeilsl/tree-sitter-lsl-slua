@@ -12,6 +12,10 @@ The package contains **only the grammars**. A separate library — the
 **tree-sitter runtime** — does the actual parsing. You install the runtime
 once; this package plugs into it.
 
+**Cross-platform.** The source is portable C11 and pure Python 3. Official
+pre-built release archives are published for `windows-x64`, `linux-x64`,
+`macos-arm64`, and `macos-x64`.
+
 ---
 
 ## Table of contents
@@ -23,7 +27,9 @@ once; this package plugs into it.
 5. [Working with parse trees](#working-with-parse-trees)
 6. [Building a syntax highlighter](#building-a-syntax-highlighter)
 7. [Troubleshooting](#troubleshooting)
-8. [Licensing](#licensing)
+8. [Building from source (maintainers)](#building-from-source-maintainers)
+9. [Release assets](#release-assets)
+10. [Licensing](#licensing)
 
 ---
 
@@ -40,7 +46,7 @@ project:
 | Form | File | Use when |
 |---|---|---|
 | **Source** | `<grammar>/src/parser.c` | You compile it into your program. No shared library involved. |
-| **Shared library** | `<grammar>/lsl.dll` (Windows), `.so` (Linux), `.dylib` (macOS) | You load the grammar at runtime, e.g. from a plugin host or script engine. |
+| **Shared library** | `<grammar>/<grammar>.dll` (Windows), `.so` (Linux), `.dylib` (macOS) | You load the grammar at runtime, e.g. from a plugin host or script engine. |
 
 Both forms expose the same C function:
 
@@ -72,12 +78,12 @@ Pick whichever matches your environment:
 
 | Environment | Command |
 |---|---|
-| vcpkg | `vcpkg install tree-sitter` |
+| Windows (vcpkg) | `vcpkg install tree-sitter` |
 | Conan | `conan install tree-sitter/0.25.0` |
 | Debian / Ubuntu | `sudo apt install libtree-sitter-dev` |
 | Fedora | `sudo dnf install tree-sitter-devel` |
 | macOS (Homebrew) | `brew install tree-sitter` |
-| From source | `cmake -B build && cmake --build build && cmake --install build` in the runtime repository |
+| Any OS (source) | see the runtime repository; typically `cmake -B build && cmake --build build && cmake --install build` |
 
 The package expects a runtime **≥ 0.27**. Newer versions are fine; the parser
 tables are forward-compatible across minor versions.
@@ -88,9 +94,21 @@ When you use this package through CMake, it will search for the runtime
 automatically. If the runtime is installed somewhere unusual, tell CMake
 where it is by one of these three methods (any one is enough):
 
-- **Environment variable:** `set tree-sitter_ROOT=C:\path\to\tree-sitter`
-- **CMake flag:** `-Dtree-sitter_DIR=C:/path/to/tree-sitter/lib/cmake/tree-sitter`
-- **CMakePresets.json:**
+- **Environment variable**
+
+  ```
+  Windows:  set tree-sitter_ROOT=C:\path\to\tree-sitter
+  Unix:     export tree-sitter_ROOT=/path/to/tree-sitter
+  ```
+
+- **CMake flag**
+
+  ```
+  -Dtree-sitter_DIR=/path/to/tree-sitter/lib/cmake/tree-sitter
+  ```
+
+- **`CMakePresets.json`**
+
   ```json
   {
     "version": 6,
@@ -122,10 +140,10 @@ Best if your project already uses CMake. Add this to your `CMakeLists.txt`:
 ```cmake
 include(FetchContent)
 
-FetchContent_Declare(tree-sitter-lsl-lsua
-    GIT_REPOSITORY https://github.com/MdONeilsl/tree-sitter-lsl-lsua.git
-    GIT_TAG        v0.1.0)
-FetchContent_MakeAvailable(tree-sitter-lsl-lsua)
+FetchContent_Declare(tree-sitter-lsl-slua
+    GIT_REPOSITORY https://github.com/MdONeilsl/tree-sitter-lsl-slua.git
+    GIT_TAG        v0.2.0)          # or the latest tag from the releases page
+FetchContent_MakeAvailable(tree-sitter-lsl-slua)
 
 target_link_libraries(my_target PRIVATE
     tree-sitter::lsl
@@ -133,19 +151,27 @@ target_link_libraries(my_target PRIVATE
 ```
 
 CMake fetches, configures, and links the grammars automatically. If you only
-need one grammar, use `FetchContent_MakeAvailable` with the same repository
-and set `-DTS_LSL_LSUA_BUILD_SLUA=OFF` (or the other way around).
+need one grammar, set `-DTS_LSL_SLUA_BUILD_SLUA=OFF` (or the reverse) before
+`FetchContent_MakeAvailable`.
 
 ### Option 2 — Download a release archive and drop it in
 
 Best if you do not use CMake, or want a fixed version without network access.
 
 1. Download the archive for your platform from
-   <https://github.com/MdONeilsl/tree-sitter-lsl-slua/releasess>
-   (e.g. `tree-sitter-lsl-lsua-windows-x64.zip`).
-2. Extract it. You get a single top-level folder:
+   <https://github.com/MdONeilsl/tree-sitter-lsl-slua/releases> — one of:
+
    ```
-   tree-sitter-lsl-lsua-windows-x64/
+   tree-sitter-lsl-slua-windows-x64.zip
+   tree-sitter-lsl-slua-linux-x64.tar.gz
+   tree-sitter-lsl-slua-macos-arm64.tar.gz
+   tree-sitter-lsl-slua-macos-x64.tar.gz
+   ```
+
+2. Extract it. You get a single top-level folder:
+
+   ```
+   tree-sitter-lsl-slua-windows-x64/
        CMakeLists.txt
        lsl/
        slua/
@@ -153,20 +179,25 @@ Best if you do not use CMake, or want a fixed version without network access.
        LICENSE
        THIRD_PARTY_NOTICES.md
    ```
+
 3. Copy that folder anywhere inside your project — typically
-   `third_party/tree-sitter-lsl-lsua/`.
+   `third_party/tree-sitter-lsl-slua/`.
+
 4. If you use CMake:
+
    ```cmake
-   add_subdirectory(third_party/tree-sitter-lsl-lsua)
+   add_subdirectory(third_party/tree-sitter-lsl-slua)
    target_link_libraries(my_target PRIVATE tree-sitter::lsl)
    ```
+
    If you do not use CMake, see Option 3.
 
 ### Option 3 — Use the C sources directly
 
 Best if you do not use CMake at all.
 
-1. Add `<grammar>/src/parser.c` to your build.
+1. Add `<grammar>/src/parser.c` to your build. For SLua, also add
+   `<grammar>/src/scanner.c` — the external scanner is required.
 2. Add `<grammar>/src` to your include path (so `parser.c` finds
    `tree_sitter/parser.h`).
 3. Add `<grammar>/include` to your include path (so your code finds
@@ -177,7 +208,8 @@ For example, with a hand-written Makefile or MSBuild:
 
 ```
 sources:    lsl/src/parser.c  my_code.c
-includes:   lsl/src  lsl/include  <tree-sitter-runtime>/include
+            slua/src/parser.c  slua/src/scanner.c  my_code.c
+includes:   <grammar>/src  <grammar>/include  <tree-sitter-runtime>/include
 libraries:  tree-sitter   (or libtree-sitter.a, tree-sitter.lib, …)
 ```
 
@@ -218,9 +250,9 @@ ts_parser_set_language(parser, tree_sitter_slua());
 
 ### Loading the grammar at runtime instead of linking
 
-If you would rather load the grammar from `<grammar>.dll` at runtime — for
-example, from a plugin host that does not want to link any grammar
-statically — use the standard platform loader.
+If you would rather load the grammar from `<grammar>.dll` / `.so` / `.dylib`
+at runtime — for example, from a plugin host that does not want to link any
+grammar statically — use the standard platform loader.
 
 **Windows:**
 
@@ -245,7 +277,7 @@ ts_parser_set_language(parser, get_lang());
 #include <dlfcn.h>
 #include <tree_sitter/api.h>
 
-void *h = dlopen("./lsl.so", RTLD_NOW | RTLD_LOCAL);
+void *h = dlopen("./lsl.so", RTLD_NOW | RTLD_LOCAL);   /* .dylib on macOS */
 if (!h) { /* handle error */ }
 
 const TSLanguage *(*get_lang)(void) =
@@ -260,7 +292,8 @@ is no C++ name mangling, no wrapper layer, and no ABI marshalling. It works
 from any language with `dlopen` / `LoadLibrary` / FFI support.
 
 **Important:** the tree-sitter runtime must still be linked into *your*
-process. The `.dll` provides only the grammar; the runtime does the parsing.
+process. The `.dll` / `.so` / `.dylib` provides only the grammar; the runtime
+does the parsing.
 
 ---
 
@@ -336,11 +369,14 @@ tokens, the workflow is:
 1. **Parse the whole document once** (not line by line — LSL and SLua are not
    line-oriented languages).
 2. **Walk the tree once** and produce a flat list of records, one per token:
+
    ```
    (row, start_column, end_column, kind)
    ```
+
    Include both named and anonymous nodes, because `"+"`, `"("`, and string
    quotes matter for highlighting too.
+
 3. **In your paint pass**, for each visible row, find the records whose
    `row` matches, and draw the appropriate style on the corresponding
    `[start_column, end_column)` range.
@@ -407,7 +443,10 @@ distinguish, for example, a variable name from a function name by
 | | `type_param_name` |
 | | `variable_name` |
 
-Any identifier not covered by a role remains a plain `identifier`.
+Any identifier not covered by a role remains a plain `identifier`. This makes
+the tree directly usable by refactorers and optimizers — a tool can find every
+function name in a document, or every use of a variable, without scanning the
+raw text or re-lexing.
 
 ---
 
@@ -419,13 +458,14 @@ library to your link step (`tree-sitter`, `libtree-sitter.a`,
 `tree-sitter.lib`, whichever your installation provides).
 
 **`LoadLibrary` / `dlopen` returns NULL.**
-- The `.dll` / `.so` is not on the loader's search path. On Windows, place it
-  next to the executable or add its folder to `PATH`. On Linux, use an
-  absolute path or set `LD_LIBRARY_PATH`. On macOS, `DYLD_LIBRARY_PATH`.
-- Architecture mismatch — an x64 process cannot load an x86 DLL.
-- A dependency of the DLL is missing. Run
-  [Dependencies](https://github.com/lucasg/Dependencies) (Windows) or
-  `ldd` (Linux) on the file.
+- The `.dll` / `.so` / `.dylib` is not on the loader's search path. On Windows,
+  place it next to the executable or add its folder to `PATH`. On Linux, use
+  an absolute path or set `LD_LIBRARY_PATH`. On macOS, `DYLD_LIBRARY_PATH`.
+- Architecture mismatch — an x64 process cannot load an arm64 library, and
+  vice versa.
+- A dependency of the library is missing. Run
+  [Dependencies](https://github.com/lucasg/Dependencies) (Windows),
+  `ldd <file>` (Linux), or `otool -L <file>` (macOS) on the file.
 
 **`ts_parser_set_language()` returns `false`.**
 Runtime version is older than the grammar. Upgrade the runtime to 0.27 or
@@ -433,18 +473,101 @@ newer.
 
 **Parse tree has `ERROR` nodes.**
 The grammar can parse the language, but some construct in your source is not
-yet covered. Please open an issue with a minimal reproduction. LSL has more
-than 400 built-in functions and several syntax quirks (`||` binds tighter
-than `&&`, for example) that are added incrementally.
+yet covered. Please open an issue with a minimal reproduction. Both grammars
+support the preprocessor, `switch` / `case` / `default`, `break` / `continue`,
+lazy-list assignment, and the full C99 literal syntax; if an `ERROR` appears,
+it is likely a genuinely invalid construct or an unsupported Firestorm /
+PyOptimizer extension. Note that LSL's `||` binds tighter than `&&`, unlike C.
 
 **CMake cannot find `tree-sitter`.**
 See [If CMake cannot find the runtime](#if-cmake-cannot-find-the-runtime)
-above.
+above. On Unix the environment-variable form is
+`export tree-sitter_ROOT=/path/to/tree-sitter`.
 
 **I only want one grammar, not both.**
-With FetchContent: `-DTS_LSL_LSUA_BUILD_SLUA=OFF` (or the reverse). With a
+With FetchContent: `-DTS_LSL_SLUA_BUILD_SLUA=OFF` (or the reverse). With a
 release archive: keep only the `lsl/` or `slua/` folder and `add_subdirectory`
 that one.
+
+---
+
+## Building from source (maintainers)
+
+If you have cloned the repository and want to regenerate the parsers or
+produce a release archive, use one of the two script pairs. Both
+auto-download the tree-sitter CLI on first run, so no manual installation is
+required.
+
+| Platform | Generate and build | Assemble dist |
+|---|---|---|
+| Windows | `scripts\generate-all.cmd` | `scripts\assemble-dist.cmd` |
+| Linux / macOS | `bash scripts/generate-all.sh` | `bash scripts/assemble-dist.sh` |
+
+The generate step performs four sub-steps per grammar:
+
+1. `python generate_<name>_grammar.py` → rewrites `grammar.json`.
+2. `tree-sitter generate grammar.json` → rewrites `src/parser.c` and
+   `src/tree_sitter/parser.h`.
+3. Copies `grammar.json` into `src/grammar.json` (required by `tree-sitter
+   build`).
+4. `tree-sitter build --output <name>.{dll,so,dylib} .` → builds the shared
+   library.
+
+The assemble step produces a `dist/` folder that is byte-identical in
+structure to what a release archive contains.
+
+Run the test suite after any grammar change:
+
+```cmd
+python tests\grammar\run_tests.py
+```
+
+It parses every file under `tests/grammar/lsl/` and `tests/grammar/slua/`,
+asserts `has_error == False`, and checks any additional assertions in the
+adjacent `.json` meta files. It also prints baseline parse timings.
+
+---
+
+## Release assets
+
+Every tagged release publishes four archives, one per platform:
+
+```
+tree-sitter-lsl-slua-windows-x64.zip
+tree-sitter-lsl-slua-linux-x64.tar.gz
+tree-sitter-lsl-slua-macos-arm64.tar.gz
+tree-sitter-lsl-slua-macos-x64.tar.gz
+```
+
+Each archive extracts to a single top-level folder named after the archive.
+Extracting `tree-sitter-lsl-slua-linux-x64.tar.gz` into `third_party/` gives
+you:
+
+```
+third_party/tree-sitter-lsl-slua-linux-x64/
+    CMakeLists.txt
+    README.md
+    LICENSE
+    THIRD_PARTY_NOTICES.md
+    lsl/
+        CMakeLists.txt
+        include/lsl.h
+        src/parser.c
+        src/node-types.json
+        src/tree_sitter/parser.h
+        lsl.so                     ← lsl.dll on Windows, lsl.dylib on macOS
+    slua/
+        CMakeLists.txt
+        include/slua.h
+        src/parser.c
+        src/scanner.c
+        src/node-types.json
+        src/tree_sitter/parser.h
+        slua.so                    ← slua.dll on Windows, slua.dylib on macOS
+```
+
+The tree-sitter **runtime** is never bundled. Consumers install it separately
+as described earlier in this document.
 
 ---
 
@@ -466,5 +589,5 @@ third-party notices.
 
 ---
 
-*Second Life, SL, and inSL are trademarks of Linden Research, Inc. tree-sitter-lsl-slua
- is not affiliated with or sponsored by Linden Research.*
+*Second Life, SL, and inSL are trademarks of Linden Research, Inc.
+tree-sitter-lsl-slua is not affiliated with or sponsored by Linden Research.*

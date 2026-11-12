@@ -33,6 +33,11 @@ import warnings
 
 from tree_sitter import Language, Parser
 
+def _lib_ext() -> str:
+    if sys.platform == "win32":   return ".dll"
+    if sys.platform == "darwin":  return ".dylib"
+    return ".so"
+
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
@@ -179,10 +184,13 @@ def perf_smoke(parser, language):
 def main():
     verbose = "-v" in sys.argv or "--verbose" in sys.argv
 
-    lsl_dll  = ROOT / "lsl"  / "lsl.dll"
-    slua_dll = ROOT / "slua" / "slua.dll"
+    ext = _lib_ext()
+    lsl_dll  = ROOT / "lsl"  / f"lsl{ext}"
+    slua_dll = ROOT / "slua" / f"slua{ext}"
     if not lsl_dll.exists() or not slua_dll.exists():
-        print("ERROR: build the grammars first: scripts\\generate-all.cmd")
+        print("ERROR: build the grammars first:")
+        print("  Windows:  scripts\\generate-all.cmd")
+        print("  Unix:     bash scripts/generate-all.sh")
         return 1
 
     try:

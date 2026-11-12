@@ -1,6 +1,6 @@
 /* lsl/include/lsl.h
  *
- * Public API for the LSL grammar produced by tree-sitter-lsl-lsua.
+ * Public API for the LSL grammar produced by tree-sitter-lsl-slua.
  *
  * Consumers link one of:
  *   - the static library produced by CMake from src/parser.c, or

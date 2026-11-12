@@ -3,7 +3,7 @@ project(tree-sitter-consumer LANGUAGES C)
 
 # Bring in the packaged grammars via add_subdirectory.
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../dist"
-                 "${CMAKE_CURRENT_BINARY_DIR}/tree-sitter-lsl-lsua")
+                 "${CMAKE_CURRENT_BINARY_DIR}/tree-sitter-lsl-slua")
 
 add_executable(consumer main.c)
 target_link_libraries(consumer PRIVATE

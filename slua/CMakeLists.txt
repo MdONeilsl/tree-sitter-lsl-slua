@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
-# A consumer who only wants SLua can do:
-#     add_subdirectory(third_party/tree-sitter-lsl-lsua/slua)
+# This file exists so that a consumer who only wants SLua can do:
+#     add_subdirectory(third_party/tree-sitter-lsl-slua/slua)
 # without pulling in LSL.
 
 add_library(tree-sitter-slua STATIC

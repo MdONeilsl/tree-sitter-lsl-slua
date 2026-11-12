@@ -25,11 +25,13 @@ jobs:
             platform: linux-x64
             cli-arch: linux-x64
             archive-ext: tar.gz
-          - os: macos-14        # arm64
+          # FIX: Use macos-latest for arm64
+          - os: macos-latest
             platform: macos-arm64
             cli-arch: macos-arm64
             archive-ext: tar.gz
-          - os: macos-13        # x64
+          # FIX: Use macos-15-intel for x64
+          - os: macos-15-intel
             platform: macos-x64
             cli-arch: macos-x64
             archive-ext: tar.gz

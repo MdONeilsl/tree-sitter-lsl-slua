@@ -99,7 +99,7 @@ enum ts_symbol_identifiers {
   anon_sym_SQUOTE = 77,
   aux_sym_string_token2 = 78,
   anon_sym_BQUOTE = 79,
-  aux_sym_interpolated_string_token1 = 80,
+  sym_string_content = 80,
   anon_sym_DASH_DASH_LBRACK = 81,
   anon_sym_DASH_DASH = 82,
   aux_sym_comment_token1 = 83,
@@ -172,7 +172,7 @@ enum ts_symbol_identifiers {
   sym_number = 150,
   sym_string = 151,
   sym_interpolated_string = 152,
-  sym__interpolation = 153,
+  sym_interpolation = 153,
   sym_comment = 154,
   aux_sym_source_file_repeat1 = 155,
   aux_sym__function_name_repeat1 = 156,
@@ -284,7 +284,7 @@ static const char * const ts_symbol_names[] = {
   [anon_sym_SQUOTE] = "'",
   [aux_sym_string_token2] = "string_token2",
   [anon_sym_BQUOTE] = "`",
-  [aux_sym_interpolated_string_token1] = "interpolated_string_token1",
+  [sym_string_content] = "string_content",
   [anon_sym_DASH_DASH_LBRACK] = "--[",
   [anon_sym_DASH_DASH] = "--",
   [aux_sym_comment_token1] = "comment_token1",
@@ -357,7 +357,7 @@ static const char * const ts_symbol_names[] = {
   [sym_number] = "number",
   [sym_string] = "string",
   [sym_interpolated_string] = "interpolated_string",
-  [sym__interpolation] = "_interpolation",
+  [sym_interpolation] = "interpolation",
   [sym_comment] = "comment",
   [aux_sym_source_file_repeat1] = "source_file_repeat1",
   [aux_sym__function_name_repeat1] = "_function_name_repeat1",
@@ -469,7 +469,7 @@ static const TSSymbol ts_symbol_map[] = {
   [anon_sym_SQUOTE] = anon_sym_SQUOTE,
   [aux_sym_string_token2] = aux_sym_string_token2,
   [anon_sym_BQUOTE] = anon_sym_BQUOTE,
-  [aux_sym_interpolated_string_token1] = aux_sym_interpolated_string_token1,
+  [sym_string_content] = sym_string_content,
   [anon_sym_DASH_DASH_LBRACK] = anon_sym_DASH_DASH_LBRACK,
   [anon_sym_DASH_DASH] = anon_sym_DASH_DASH,
   [aux_sym_comment_token1] = aux_sym_comment_token1,
@@ -542,7 +542,7 @@ static const TSSymbol ts_symbol_map[] = {
   [sym_number] = sym_number,
   [sym_string] = sym_string,
   [sym_interpolated_string] = sym_interpolated_string,
-  [sym__interpolation] = sym__interpolation,
+  [sym_interpolation] = sym_interpolation,
   [sym_comment] = sym_comment,
   [aux_sym_source_file_repeat1] = aux_sym_source_file_repeat1,
   [aux_sym__function_name_repeat1] = aux_sym__function_name_repeat1,
@@ -894,9 +894,9 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .visible = true,
     .named = false,
   },
-  [aux_sym_interpolated_string_token1] = {
-    .visible = false,
-    .named = false,
+  [sym_string_content] = {
+    .visible = true,
+    .named = true,
   },
   [anon_sym_DASH_DASH_LBRACK] = {
     .visible = true,
@@ -1186,8 +1186,8 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .visible = true,
     .named = true,
   },
-  [sym__interpolation] = {
-    .visible = false,
+  [sym_interpolation] = {
+    .visible = true,
     .named = true,
   },
   [sym_comment] = {
@@ -2809,7 +2809,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
       ACCEPT_TOKEN(anon_sym_BQUOTE);
       END_STATE();
     case 87:
-      ACCEPT_TOKEN(aux_sym_interpolated_string_token1);
+      ACCEPT_TOKEN(sym_string_content);
       if (lookahead == '-') ADVANCE(88);
       if (('\t' <= lookahead && lookahead <= '\r') ||
           lookahead == ' ') ADVANCE(87);
@@ -2818,14 +2818,14 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
           lookahead != '{') ADVANCE(89);
       END_STATE();
     case 88:
-      ACCEPT_TOKEN(aux_sym_interpolated_string_token1);
+      ACCEPT_TOKEN(sym_string_content);
       if (lookahead == '-') ADVANCE(96);
       if (lookahead != 0 &&
           lookahead != '`' &&
           lookahead != '{') ADVANCE(89);
       END_STATE();
     case 89:
-      ACCEPT_TOKEN(aux_sym_interpolated_string_token1);
+      ACCEPT_TOKEN(sym_string_content);
       if (lookahead != 0 &&
           lookahead != '`' &&
           lookahead != '{') ADVANCE(89);
@@ -36858,11 +36858,11 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(1395), 1,
       anon_sym_BQUOTE,
     ACTIONS(1397), 1,
-      aux_sym_interpolated_string_token1,
+      sym_string_content,
     ACTIONS(1400), 1,
       anon_sym_DASH_DASH_LBRACK,
     STATE(772), 1,
-      sym__interpolation,
+      sym_interpolation,
     STATE(628), 2,
       sym_comment,
       aux_sym_interpolated_string_repeat1,
@@ -36972,13 +36972,13 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(1414), 1,
       anon_sym_BQUOTE,
     ACTIONS(1416), 1,
-      aux_sym_interpolated_string_token1,
+      sym_string_content,
     STATE(636), 1,
       sym_comment,
     STATE(638), 1,
       aux_sym_interpolated_string_repeat1,
     STATE(772), 1,
-      sym__interpolation,
+      sym_interpolation,
   [35468] = 5,
     ACTIONS(3), 1,
       anon_sym_DASH_DASH_LBRACK,
@@ -37001,7 +37001,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(1412), 1,
       anon_sym_LBRACE,
     ACTIONS(1416), 1,
-      aux_sym_interpolated_string_token1,
+      sym_string_content,
     ACTIONS(1418), 1,
       anon_sym_BQUOTE,
     STATE(628), 1,
@@ -37009,7 +37009,7 @@ static const uint16_t ts_small_parse_table[] = {
     STATE(638), 1,
       sym_comment,
     STATE(772), 1,
-      sym__interpolation,
+      sym_interpolation,
   [35512] = 4,
     ACTIONS(3), 1,
       anon_sym_DASH_DASH_LBRACK,
@@ -37170,7 +37170,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(1412), 1,
       anon_sym_LBRACE,
     ACTIONS(1416), 1,
-      aux_sym_interpolated_string_token1,
+      sym_string_content,
     ACTIONS(1430), 1,
       anon_sym_BQUOTE,
     STATE(628), 1,
@@ -37178,7 +37178,7 @@ static const uint16_t ts_small_parse_table[] = {
     STATE(650), 1,
       sym_comment,
     STATE(772), 1,
-      sym__interpolation,
+      sym_interpolation,
   [35742] = 6,
     ACTIONS(3), 1,
       anon_sym_DASH_DASH_LBRACK,
@@ -37217,7 +37217,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(1412), 1,
       anon_sym_LBRACE,
     ACTIONS(1416), 1,
-      aux_sym_interpolated_string_token1,
+      sym_string_content,
     ACTIONS(1436), 1,
       anon_sym_BQUOTE,
     STATE(653), 1,
@@ -37225,7 +37225,7 @@ static const uint16_t ts_small_parse_table[] = {
     STATE(654), 1,
       aux_sym_interpolated_string_repeat1,
     STATE(772), 1,
-      sym__interpolation,
+      sym_interpolation,
   [35809] = 8,
     ACTIONS(5), 1,
       anon_sym_DASH_DASH,
@@ -37234,7 +37234,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(1412), 1,
       anon_sym_LBRACE,
     ACTIONS(1416), 1,
-      aux_sym_interpolated_string_token1,
+      sym_string_content,
     ACTIONS(1438), 1,
       anon_sym_BQUOTE,
     STATE(628), 1,
@@ -37242,7 +37242,7 @@ static const uint16_t ts_small_parse_table[] = {
     STATE(654), 1,
       sym_comment,
     STATE(772), 1,
-      sym__interpolation,
+      sym_interpolation,
   [35834] = 8,
     ACTIONS(3), 1,
       anon_sym_DASH_DASH_LBRACK,
@@ -37359,7 +37359,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(1412), 1,
       anon_sym_LBRACE,
     ACTIONS(1416), 1,
-      aux_sym_interpolated_string_token1,
+      sym_string_content,
     ACTIONS(1456), 1,
       anon_sym_BQUOTE,
     STATE(650), 1,
@@ -37367,7 +37367,7 @@ static const uint16_t ts_small_parse_table[] = {
     STATE(662), 1,
       sym_comment,
     STATE(772), 1,
-      sym__interpolation,
+      sym_interpolation,
   [36012] = 4,
     ACTIONS(3), 1,
       anon_sym_DASH_DASH_LBRACK,
@@ -38843,7 +38843,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(1732), 3,
       anon_sym_LBRACE,
       anon_sym_BQUOTE,
-      aux_sym_interpolated_string_token1,
+      sym_string_content,
   [38139] = 6,
     ACTIONS(3), 1,
       anon_sym_DASH_DASH_LBRACK,
@@ -38867,7 +38867,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(1736), 3,
       anon_sym_LBRACE,
       anon_sym_BQUOTE,
-      aux_sym_interpolated_string_token1,
+      sym_string_content,
   [38173] = 4,
     ACTIONS(3), 1,
       anon_sym_DASH_DASH_LBRACK,
@@ -42566,7 +42566,7 @@ static const TSParseActionEntry ts_parse_actions[] = {
   [1726] = {.entry = {.count = 1, .reusable = false}}, SHIFT(956),
   [1728] = {.entry = {.count = 1, .reusable = false}}, SHIFT(903),
   [1730] = {.entry = {.count = 1, .reusable = false}}, SHIFT(869),
-  [1732] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym__interpolation, 3, 0, 0),
+  [1732] = {.entry = {.count = 1, .reusable = false}}, REDUCE(sym_interpolation, 3, 0, 0),
   [1734] = {.entry = {.count = 1, .reusable = true}}, SHIFT(202),
   [1736] = {.entry = {.count = 1, .reusable = false}}, REDUCE(aux_sym_interpolated_string_repeat1, 1, 0, 0),
   [1738] = {.entry = {.count = 1, .reusable = true}}, SHIFT(530),

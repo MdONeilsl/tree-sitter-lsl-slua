@@ -1393,6 +1393,25 @@
       "required": false,
       "types": [
         {
+          "type": "interpolation",
+          "named": true
+        },
+        {
+          "type": "string_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "interpolation",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
           "type": "binary_expression",
           "named": true
         },
@@ -2895,6 +2914,10 @@
   {
     "type": "return",
     "named": false
+  },
+  {
+    "type": "string_content",
+    "named": true
   },
   {
     "type": "table_field_name",

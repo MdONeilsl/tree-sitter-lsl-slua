@@ -2,45 +2,59 @@
 REM scripts\generate-all.cmd
 REM
 REM Windows counterpart to scripts/generate-all.sh.
-REM Auto-downloads the tree-sitter CLI if not present at the repo root.
+REM Auto-downloads the tree-sitter CLI if not present at the repo root,
+REM then regenerates grammar.json, parser.c, and the shared library
+REM for each grammar.
 
 setlocal EnableDelayedExpansion
 set ROOT=%~dp0..
 set TS=%ROOT%\tree-sitter.exe
 
-REM --- Download CLI if missing ---------------------------------------
-if not exist "%TS%" (
-    if /I "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
-        set CLI_ARCH=windows-x64
-    ) else if /I "%PROCESSOR_ARCHITECTURE%"=="ARM64" (
-        set CLI_ARCH=windows-arm64
-    ) else (
-        set CLI_ARCH=windows-x64
-    )
-    echo === Downloading tree-sitter CLI 0.27.2 (%%CLI_ARCH%%) ===
-    set CLI_URL=https://github.com/tree-sitter/tree-sitter/releases/download/v0.27.2/tree-sitter-cli-%%CLI_ARCH%%.zip
-    powershell -NoProfile -Command "Invoke-WebRequest -Uri '%%CLI_URL%%' -OutFile '%TEMP%\ts-cli.zip'"
-    if errorlevel 1 (
-        echo ERROR: could not download the tree-sitter CLI.
-        exit /b 1
-    )
-    powershell -NoProfile -Command "Expand-Archive -Path '%TEMP%\ts-cli.zip' -DestinationPath '%TEMP%\ts-cli' -Force"
-    if errorlevel 1 (
-        echo ERROR: could not expand the tree-sitter CLI archive.
-        exit /b 1
-    )
-    copy /Y "%TEMP%\ts-cli\tree-sitter.exe" "%TS%" >nul
-    del "%TEMP%\ts-cli.zip" 2>nul
-    rmdir /s /q "%TEMP%\ts-cli" 2>nul
-    if not exist "%TS%" (
-        echo ERROR: tree-sitter.exe not found after extraction.
-        exit /b 1
-    )
+REM ------------------------------------------------------------------
+REM Download CLI if missing.  No paren blocks here — top-level gotos
+REM avoid a class of cmd parse-time bugs where `set VAR=...` inside a
+REM nested if/else block can leave VAR empty.
+REM ------------------------------------------------------------------
+if exist "%TS%" goto :have_cli
+
+set CLI_VERSION=0.27.2
+set CLI_ARCH=windows-x64
+if /I "%PROCESSOR_ARCHITECTURE%"=="ARM64" set CLI_ARCH=windows-arm64
+
+set CLI_URL=https://github.com/tree-sitter/tree-sitter/releases/download/v%CLI_VERSION%/tree-sitter-cli-%CLI_ARCH%.zip
+
+echo === Downloading tree-sitter CLI %CLI_VERSION% (%CLI_ARCH%) ===
+echo URL: %CLI_URL%
+
+powershell -NoProfile -Command "Invoke-WebRequest -Uri '%CLI_URL%' -OutFile '%TEMP%\ts-cli.zip'"
+if errorlevel 1 (
+    echo ERROR: could not download the tree-sitter CLI.
+    exit /b 1
 )
 
-echo === tree-sitter: && "%TS%" --version ===
+powershell -NoProfile -Command "Expand-Archive -Path '%TEMP%\ts-cli.zip' -DestinationPath '%TEMP%\ts-cli' -Force"
+if errorlevel 1 (
+    echo ERROR: could not expand the tree-sitter CLI archive.
+    exit /b 1
+)
 
-REM --- Generate and build each grammar -------------------------------
+copy /Y "%TEMP%\ts-cli\tree-sitter.exe" "%TS%" >nul
+del "%TEMP%\ts-cli.zip" 2>nul
+rmdir /s /q "%TEMP%\ts-cli" 2>nul
+
+if not exist "%TS%" (
+    echo ERROR: tree-sitter.exe not found after extraction.
+    exit /b 1
+)
+
+:have_cli
+
+echo === tree-sitter version ===
+"%TS%" --version
+
+REM ------------------------------------------------------------------
+REM Generate and build each grammar.
+REM ------------------------------------------------------------------
 for %%G in (lsl slua) do (
     if exist "%ROOT%\%%G\generate_%%G_grammar.py" (
         pushd "%ROOT%\%%G"

@@ -1,4 +1,9 @@
 local name = "world"
-local greeting = `hello {name}`
-local combined = `a{1}b{2}c`
-local plain = `no interpolation`
+local n = 1
+
+local simple = `hello {name}`
+local mixed = `a{1}b{2}c`
+local plain = `no interpolation here`
+local leading = `{n} starts`
+local trailing = `ends with {n}`
+local adjacent = `{n}{n}`

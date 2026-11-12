@@ -22,22 +22,22 @@ def rules():
             rule_seq(rule_string("["), rule_symbol("long_string_rest")),
         )),
 
-        ("interpolated_string", rule_seq(
+                ("interpolated_string", rule_seq(
             rule_string("`"),
             rule_repeat(rule_choice(
-                rule_symbol("_interpolation"),
-                rule_pattern(r"[^`{]+"),
+                rule_symbol("interpolation"),
+                rule_symbol("string_content"),
             )),
             rule_string("`"),
         )),
 
-        # Interpolation body: `{ expr }`. Hidden dispatch — the inner
-        # expression is what carries the roles.
-        ("_interpolation", rule_seq(
+        ("interpolation", rule_seq(
             rule_string("{"),
             rule_symbol("_expression"),
             rule_string("}"),
         )),
+
+        ("string_content", rule_pattern(r"[^`{]+")),
 
         # Single-line and long-form comments. `--[[ ... ]]` and
         # `--[=[ ... ]=]` must be handled by the `long_string_rest` external

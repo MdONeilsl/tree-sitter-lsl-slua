@@ -5,7 +5,7 @@
 #   https://github.com/tree-sitter/tree-sitter/releases
 # and is different per OS/arch. It is not a dependency of this package.
 /tree-sitter
-/tree-sitter.exe
+tree-sitter.exe
 /tree-sitter-cli*.zip
 
 # ---------------------------------------------------------------------------
@@ -33,6 +33,7 @@
 # Assembled release folder
 # ---------------------------------------------------------------------------
 /dist/
+dist/
 
 # ---------------------------------------------------------------------------
 # CMake build output
@@ -88,3 +89,8 @@ slua/scanner_probe.py
 probe_out.txt
 
 tests/consumer/build/
+workspace/
+tests/grammar/slua/grammar_coverage.txt
+tests\grammar\slua\full.slua
+tests\grammar\slua\full.json
+.localpilot/

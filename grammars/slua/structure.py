@@ -1,4 +1,3 @@
-# grammars/slua/structure.py
 from ..helpers import (
     rule_alias,
     rule_choice,
@@ -13,34 +12,28 @@ from ..helpers import (
 
 def rules():
     return [
-        # source_file MUST be first rule — the start rule.
-        ("source_file", rule_repeat(rule_symbol("_statement"))),
+        ("source_file", rule_repeat(rule_symbol("stat"))),
 
-        # Block: must match at least one statement, so `repeat1`. Call sites
-        # wrap in `rule_optional(block)` — an empty `function f() end` has
-        # no `block` child, which is correct: there is nothing to highlight.
-        ("block", rule_repeat1(rule_symbol("_statement"))),
+        ("block", rule_repeat1(rule_symbol("stat"))),
 
-        # -- Functions ---------------------------------------------------
-        ("function_declaration", rule_seq(
-            rule_optional(rule_symbol("_attributes")),
+        ("fundef", rule_seq(
+            rule_optional(rule_symbol("attributes")),
             rule_string("function"),
-            rule_symbol("_function_name"),
-            rule_optional(rule_symbol("_type_params")),
-            rule_symbol("function_body"),
+            rule_symbol("funcname"),
+            rule_optional(rule_symbol("GenericTypeList")),
+            rule_symbol("funcbody"),
         )),
 
-        ("local_function_declaration", rule_seq(
-            rule_optional(rule_symbol("_attributes")),
+        ("lfuncdef", rule_seq(
+            rule_optional(rule_symbol("attributes")),
             rule_string("local"),
             rule_string("function"),
             rule_alias(rule_symbol("identifier"), "function_name"),
-            rule_optional(rule_symbol("_type_params")),
-            rule_symbol("function_body"),
+            rule_optional(rule_symbol("GenericTypeList")),
+            rule_symbol("funcbody"),
         )),
 
-        # `a.b.c`, `a:b`, `a.b:c`. Each identifier is aliased by role.
-        ("_function_name", rule_seq(
+        ("funcname", rule_seq(
             rule_alias(rule_symbol("identifier"), "function_name"),
             rule_repeat(rule_choice(
                 rule_seq(rule_string("."), rule_alias(rule_symbol("identifier"), "member_name")),
@@ -48,46 +41,48 @@ def rules():
             )),
         )),
 
-        ("_type_params", rule_seq(
+        ("GenericTypeList", rule_seq(
             rule_string("<"),
-            rule_symbol("_type_param"),
-            rule_repeat(rule_seq(rule_string(","), rule_symbol("_type_param"))),
+            rule_symbol("gtparam"),
+            rule_repeat(rule_seq(rule_string(","), rule_symbol("gtparam"))),
             rule_string(">"),
         )),
 
-        # `T`, `T...` (variadic type pack), or `T = Default`.
-        ("_type_param", rule_seq(
+        ("gtparam", rule_seq(
             rule_alias(rule_symbol("identifier"), "type_param_name"),
             rule_optional(rule_string("...")),
-            rule_optional(rule_seq(rule_string("="), rule_symbol("_type"))),
+            rule_optional(rule_seq(
+                rule_string("="),
+                rule_choice(
+                    rule_symbol("Type"),
+                    rule_seq(rule_string("("), rule_optional(rule_symbol("TypeList")), rule_string(")")),
+                    rule_seq(rule_string("..."), rule_symbol("Type")),
+                    rule_seq(rule_alias(rule_symbol("identifier"), "type_identifier"), rule_string("...")),
+                ),
+            )),
         )),
 
-        ("function_body", rule_seq(
+        ("funcbody", rule_seq(
             rule_string("("),
-            rule_optional(rule_symbol("_parameter_list")),
+            rule_optional(rule_symbol("parlist")),
             rule_string(")"),
-            rule_optional(rule_seq(rule_string(":"), rule_symbol("_type_function_ret"))),
+            rule_optional(rule_seq(rule_string(":"), rule_symbol("ReturnType"))),
             rule_optional(rule_symbol("block")),
             rule_string("end"),
         )),
 
-        ("_parameter_list", rule_choice(
+        ("parlist", rule_choice(
             rule_seq(
-                rule_symbol("parameter"),
-                rule_repeat(rule_seq(rule_string(","), rule_symbol("parameter"))),
+                rule_symbol("binding"),
+                rule_repeat(rule_seq(rule_string(","), rule_symbol("binding"))),
                 rule_optional(rule_seq(
                     rule_string(","), rule_string("..."),
-                    rule_optional(rule_seq(rule_string(":"), rule_symbol("_type"))),
+                    rule_optional(rule_seq(rule_string(":"), rule_symbol("Type"))),
                 )),
             ),
             rule_seq(
                 rule_string("..."),
-                rule_optional(rule_seq(rule_string(":"), rule_symbol("_type"))),
+                rule_optional(rule_seq(rule_string(":"), rule_symbol("Type"))),
             ),
-        )),
-
-        ("parameter", rule_seq(
-            rule_alias(rule_symbol("identifier"), "parameter_name"),
-            rule_optional(rule_seq(rule_string(":"), rule_symbol("_type"))),
         )),
     ]

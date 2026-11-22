@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "forstmt"
+  ],
+  "expect_error": false
+}

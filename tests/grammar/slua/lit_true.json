@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "true"
+  ],
+  "expect_error": false
+}

@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.16)
 # FetchContent_MakeAvailable() and add_subdirectory() set CMAKE_SOURCE_DIR
 # to the parent, so this block is skipped in those modes.
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-    project(tree-sitter-lsl-slua VERSION 0.3.0 LANGUAGES C)
+    project(tree-sitter-lsl-slua VERSION 0.3.1 LANGUAGES C)
 endif()
 
 # ---------------------------------------------------------------------------

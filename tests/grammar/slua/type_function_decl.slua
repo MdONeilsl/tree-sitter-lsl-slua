@@ -1,0 +1,1 @@
+type function Compute<T>(x: T): T return x end

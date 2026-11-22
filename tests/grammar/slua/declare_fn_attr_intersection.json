@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "declare"
+  ],
+  "expect_error": false
+}

@@ -1,0 +1,1 @@
+declare extern type quaternion with x: number end

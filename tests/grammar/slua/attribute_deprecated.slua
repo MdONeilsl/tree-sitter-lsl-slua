@@ -1,0 +1,1 @@
+@[deprecated {reason='Use bar'}] declare function foo(): number

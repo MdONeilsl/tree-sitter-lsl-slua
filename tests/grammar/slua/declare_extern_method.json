@@ -1,0 +1,7 @@
+{
+  "must_contain": [
+    "exttype",
+    "extfunc"
+  ],
+  "expect_error": false
+}

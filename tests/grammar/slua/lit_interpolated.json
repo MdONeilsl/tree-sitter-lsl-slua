@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "stringinterp"
+  ],
+  "expect_error": false
+}

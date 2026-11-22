@@ -1,0 +1,1 @@
+declare class BaseWidget extends Widget end

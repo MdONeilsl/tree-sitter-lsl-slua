@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "typefunc"
+  ],
+  "expect_error": false
+}

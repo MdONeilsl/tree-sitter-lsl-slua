@@ -34,17 +34,24 @@ def build_grammar() -> dict:
         "word": "identifier",
         "rules": dict(rules_ordered),
         "extras": [rule_pattern(r"\s"), rule_symbol("comment")],
-        # These two carry over unchanged from the pre-refactor generator.
-        # `expression_statement` vs `if_then_else_expression`: at
-        # `if c then a • else`, only later context distinguishes the
-        # statement-form `if ... end` from the expression-form
-        # `if ... then ... else ...`. GLR resolves.
-        # `_type_list` vs `_type_parenthesized`: at `(T • )`, only the
-        # following `->` distinguishes parameter list from parenthesized.
+
         "conflicts": [
-            ["expression_statement", "if_then_else_expression"],
-            ["_type_list", "_type_parenthesized"],
+            ["expstmt", "ifelseexp"],
+            ["TypeList", "tparen", "FunctionType"],
+            ["TypeList", "FunctionType"],
+            ["unexp", "functioncall", "index"],
+            ["binexp", "functioncall", "index"],
         ],
-        "externals": [rule_symbol("long_string_rest")],
-        "inline": [],
+        "externals": [
+            rule_symbol("long_string_rest"),
+        ],
+        "inline": [
+            "stat",
+            "exp",
+            "Type",
+            "SimpleType",
+            "prefixexp",
+            "type_reference",
+            "type_reference_plain",
+        ],
     }

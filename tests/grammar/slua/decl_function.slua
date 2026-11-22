@@ -1,0 +1,1 @@
+function foo(a: string, ...: any): number return 0 end

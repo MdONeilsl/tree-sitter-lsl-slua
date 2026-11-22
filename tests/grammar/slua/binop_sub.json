@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "binexp"
+  ],
+  "expect_error": false
+}

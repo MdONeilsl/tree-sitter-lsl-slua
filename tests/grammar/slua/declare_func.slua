@@ -1,0 +1,1 @@
+declare function mathLog(x: number): number

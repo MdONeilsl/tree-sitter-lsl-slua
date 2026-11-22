@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "localstmt"
+  ],
+  "expect_error": false
+}

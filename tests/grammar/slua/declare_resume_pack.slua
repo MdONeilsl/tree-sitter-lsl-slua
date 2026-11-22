@@ -1,0 +1,1 @@
+declare coroutine: { resume: (co: thread, ...any) -> (boolean, ...any) }

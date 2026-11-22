@@ -1,0 +1,1 @@
+type Point = { read x: number, write y: number }

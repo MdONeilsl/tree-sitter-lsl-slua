@@ -1,0 +1,1 @@
+type F = @checked ((a: number) -> string) & ((a: string) -> number)

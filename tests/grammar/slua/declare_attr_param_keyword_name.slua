@@ -1,0 +1,1 @@
+declare x: { AdjustDamage: @[deprecated {use='adjustDamage'}](number: number, new_damage: number) -> () }

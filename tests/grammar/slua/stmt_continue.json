@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "laststat"
+  ],
+  "expect_error": false
+}

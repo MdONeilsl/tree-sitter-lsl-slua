@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "typedef"
+  ],
+  "expect_error": false
+}

@@ -1,4 +1,3 @@
-# grammars/slua/statements.py
 from ..helpers import (
     rule_alias,
     rule_choice,
@@ -11,168 +10,29 @@ from ..helpers import (
 )
 
 
-def statement_alternatives():
-    return [
-        rule_symbol("local_declaration"),
-        rule_symbol("const_declaration"),
-        rule_symbol("local_function_declaration"),
-        rule_symbol("function_declaration"),
-        rule_symbol("type_declaration"),
-        rule_symbol("export_type_declaration"),
-        rule_symbol("type_function_declaration"),
-        rule_symbol("declare_statement"),
-        rule_symbol("if_statement"),
-        rule_symbol("while_statement"),
-        rule_symbol("repeat_statement"),
-        rule_symbol("for_statement"),
-        rule_symbol("do_statement"),
-        rule_symbol("return_statement"),
-        rule_symbol("break_statement"),
-        rule_symbol("continue_statement"),
-        rule_symbol("assignment_statement"),
-        rule_symbol("expression_statement"),
-        rule_string(";"),
-    ]
-
-
 def rules():
     return [
-        ("_statement", rule_choice(*statement_alternatives())),
-
-        # -- Locals ------------------------------------------------------
-        ("local_declaration", rule_seq(
-            rule_string("local"),
-            rule_symbol("_binding_list"),
-            rule_optional(rule_seq(rule_string("="), rule_symbol("_expression_list"))),
+        ("stat", rule_choice(
+            rule_symbol("assign"),
+            rule_symbol("expstmt"),
+            rule_symbol("dostmt"),
+            rule_symbol("whilestmt"),
+            rule_symbol("repstmt"),
+            rule_symbol("ifstmt"),
+            rule_symbol("forstmt"),
+            rule_symbol("fundef"),
+            rule_symbol("lfuncdef"),
+            rule_symbol("localstmt"),
+            rule_symbol("conststmt"),
+            rule_symbol("typedef"),
+            rule_symbol("typefunc"),
+            rule_symbol("declare"),
+            rule_symbol("laststat"),
+            rule_string(";"),
         )),
 
-        ("const_declaration", rule_seq(
-            rule_string("const"),
-            rule_symbol("_binding_list"),
-            rule_optional(rule_seq(rule_string("="), rule_symbol("_expression_list"))),
-        )),
-
-        ("_binding_list", rule_seq(
-            rule_symbol("_binding"),
-            rule_repeat(rule_seq(rule_string(","), rule_symbol("_binding"))),
-        )),
-
-        # binding: NAME [: Type]
-        #
-        # The `<const>` / `<close>` attribute from Lua 5.4 is intentionally
-        # NOT supported here: SLua uses the `const` keyword instead (see
-        # `const_declaration`), and the `<` prefix falsely entered the
-        # follow set of `_type_reference`, which caused `local x: Array<T>`
-        # to stop at `Array` (the `<` was consumed as if it were `<const>`)
-        # and error on `<T>`.
-        ("_binding", rule_seq(
-            rule_alias(rule_symbol("identifier"), "variable_name"),
-            rule_optional(rule_seq(rule_string(":"), rule_symbol("_type"))),
-        )),
-
-        # -- Type declarations -------------------------------------------
-        ("type_declaration", rule_seq(
-            rule_string("type"),
-            rule_alias(rule_symbol("identifier"), "type_identifier"),
-            rule_optional(rule_symbol("_type_params")),
-            rule_string("="),
-            rule_symbol("_type"),
-        )),
-
-        ("export_type_declaration", rule_seq(
-            rule_string("export"),
-            rule_string("type"),
-            rule_alias(rule_symbol("identifier"), "type_identifier"),
-            rule_optional(rule_symbol("_type_params")),
-            rule_string("="),
-            rule_symbol("_type"),
-        )),
-
-        ("type_function_declaration", rule_seq(
-            rule_optional(rule_string("export")),
-            rule_string("type"),
-            rule_string("function"),
-            rule_alias(rule_symbol("identifier"), "function_name"),
-            rule_symbol("function_body"),
-        )),
-
-        # -- Control flow ------------------------------------------------
-        ("if_statement", rule_seq(
-            rule_string("if"),
-            rule_symbol("_expression"),
-            rule_string("then"),
-            rule_optional(rule_symbol("block")),
-            rule_repeat(rule_seq(
-                rule_string("elseif"),
-                rule_symbol("_expression"),
-                rule_string("then"),
-                rule_optional(rule_symbol("block")),
-            )),
-            rule_optional(rule_seq(rule_string("else"), rule_optional(rule_symbol("block")))),
-            rule_string("end"),
-        )),
-
-        ("while_statement", rule_seq(
-            rule_string("while"),
-            rule_symbol("_expression"),
-            rule_string("do"),
-            rule_optional(rule_symbol("block")),
-            rule_string("end"),
-        )),
-
-        ("repeat_statement", rule_seq(
-            rule_string("repeat"),
-            rule_optional(rule_symbol("block")),
-            rule_string("until"),
-            rule_symbol("_expression"),
-        )),
-
-        ("for_statement", rule_seq(
-            rule_string("for"),
-            rule_alias(rule_symbol("identifier"), "variable_name"),
-            rule_choice(
-                rule_seq(
-                    rule_string("="),
-                    rule_symbol("_expression"),
-                    rule_string(","),
-                    rule_symbol("_expression"),
-                    rule_optional(rule_seq(rule_string(","), rule_symbol("_expression"))),
-                ),
-                rule_seq(
-                    rule_repeat(rule_seq(
-                        rule_string(","),
-                        rule_alias(rule_symbol("identifier"), "variable_name"),
-                    )),
-                    rule_string("in"),
-                    rule_symbol("_expression_list"),
-                ),
-            ),
-            rule_string("do"),
-            rule_optional(rule_symbol("block")),
-            rule_string("end"),
-        )),
-
-        ("do_statement", rule_seq(
-            rule_string("do"),
-            rule_optional(rule_symbol("block")),
-            rule_string("end"),
-        )),
-
-        ("return_statement", rule_prec_right(1, rule_seq(
-            rule_string("return"),
-            rule_optional(rule_symbol("_expression_list")),
-        ))),
-
-        ("break_statement", rule_string("break")),
-        ("continue_statement", rule_string("continue")),
-
-        # -- Assignment --------------------------------------------------
-        # LHS is a list of assignment targets (name, member access, or index).
-        # The alias(identifier, "variable_name") at target positions gives
-        # `x = 1` a distinct `variable_name` node; `a.b = 1` and `a[i] = 1`
-        # carry the whole member/index node (their own sub-aliases apply).
-        ("assignment_statement", rule_seq(
-            rule_symbol("_assignment_target_list"),
+        ("assign", rule_seq(
+            rule_symbol("varlist"),
             rule_choice(
                 rule_string("="),
                 rule_string("+="),
@@ -184,19 +44,137 @@ def rules():
                 rule_string("^="),
                 rule_string("..="),
             ),
-            rule_symbol("_expression_list"),
+            rule_symbol("explist"),
         )),
 
-        ("_assignment_target_list", rule_seq(
-            rule_symbol("_assignment_target"),
-            rule_repeat(rule_seq(rule_string(","), rule_symbol("_assignment_target"))),
+        ("varlist", rule_seq(
+            rule_symbol("var"),
+            rule_repeat(rule_seq(rule_string(","), rule_symbol("var"))),
         )),
 
-        ("_assignment_target", rule_choice(
+        ("var", rule_choice(
             rule_alias(rule_symbol("identifier"), "variable_name"),
-            rule_symbol("member_access_expression"),
-            rule_symbol("index_expression"),
+            rule_symbol("member"),
+            rule_symbol("index"),
         )),
 
-        ("expression_statement", rule_symbol("_expression")),
+        ("expstmt", rule_symbol("exp")),
+
+        ("dostmt", rule_seq(
+            rule_string("do"),
+            rule_symbol("block"),
+            rule_string("end"),
+        )),
+
+        ("whilestmt", rule_seq(
+            rule_string("while"),
+            rule_symbol("exp"),
+            rule_string("do"),
+            rule_symbol("block"),
+            rule_string("end"),
+        )),
+
+        ("repstmt", rule_seq(
+            rule_string("repeat"),
+            rule_symbol("block"),
+            rule_string("until"),
+            rule_symbol("exp"),
+        )),
+
+        ("ifstmt", rule_seq(
+            rule_string("if"),
+            rule_symbol("exp"),
+            rule_string("then"),
+            rule_symbol("block"),
+            rule_repeat(rule_seq(
+                rule_string("elseif"),
+                rule_symbol("exp"),
+                rule_string("then"),
+                rule_symbol("block"),
+            )),
+            rule_optional(rule_seq(
+                rule_string("else"),
+                rule_symbol("block"),
+            )),
+            rule_string("end"),
+        )),
+
+        ("forstmt", rule_choice(
+            rule_seq(
+                rule_string("for"),
+                rule_alias(rule_symbol("identifier"), "variable_name"),
+                rule_string("="),
+                rule_symbol("exp"),
+                rule_string(","),
+                rule_symbol("exp"),
+                rule_optional(rule_seq(rule_string(","), rule_symbol("exp"))),
+                rule_string("do"),
+                rule_symbol("block"),
+                rule_string("end"),
+            ),
+            rule_seq(
+                rule_string("for"),
+                rule_symbol("bindinglist"),
+                rule_string("in"),
+                rule_symbol("explist"),
+                rule_string("do"),
+                rule_symbol("block"),
+                rule_string("end"),
+            ),
+        )),
+
+        ("localstmt", rule_seq(
+            rule_string("local"),
+            rule_symbol("bindinglist"),
+            rule_optional(rule_seq(
+                rule_string("="),
+                rule_symbol("explist"),
+            )),
+        )),
+
+        ("conststmt", rule_choice(
+            rule_seq(
+                rule_string("const"),
+                rule_symbol("bindinglist"),
+                rule_string("="),
+                rule_symbol("explist"),
+            ),
+            rule_seq(
+                rule_string("const"),
+                rule_string("function"),
+                rule_alias(rule_symbol("identifier"), "function_name"),
+                rule_symbol("funcbody"),
+            ),
+        )),
+
+        ("typedef", rule_seq(
+            rule_optional(rule_string("export")),
+            rule_string("type"),
+            rule_alias(rule_symbol("identifier"), "type_identifier"),
+            rule_optional(rule_symbol("GenericTypeList")),
+            rule_string("="),
+            rule_symbol("Type"),
+        )),
+
+        ("binding", rule_seq(
+            rule_alias(rule_symbol("identifier"), "variable_name"),
+            rule_optional(rule_seq(
+                rule_string(":"),
+                rule_symbol("Type"),
+            )),
+        )),
+
+        ("bindinglist", rule_seq(
+            rule_symbol("binding"),
+            rule_repeat(rule_seq(rule_string(","), rule_symbol("binding"))),
+        )),
+
+        ("laststat", rule_prec_right(1, rule_choice(
+            rule_seq(
+                rule_string("return"),
+                rule_optional(rule_symbol("explist")),
+            ),
+            rule_string("break"),
+            rule_string("continue"),
+        ))),
     ]

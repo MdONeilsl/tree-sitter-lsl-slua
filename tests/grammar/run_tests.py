@@ -22,6 +22,7 @@ Run from the repo root:
 
     scripts\\generate-all.cmd
     python tests\\grammar\\run_tests.py
+    python tests\\grammar\\run_tests.py -f tests\\grammar\\slua\\full.slua -t
 """
 
 import ctypes
@@ -32,6 +33,7 @@ import time
 import warnings
 
 from tree_sitter import Language, Parser
+
 
 def _lib_ext() -> str:
     if sys.platform == "win32":   return ".dll"
@@ -100,10 +102,14 @@ def read_meta(meta_path):
         )
 
 
-def run_one_test(source_path, parser, verbose):
+def run_one_test(source_path, parser, verbose, print_tree):
     meta = read_meta(source_path.with_suffix(".json"))
 
-    rel = source_path.relative_to(HERE)
+    try:
+        rel = source_path.relative_to(HERE)
+    except ValueError:
+        rel = source_path
+
     note = meta.get("note", "")
 
     if meta.get("skip"):
@@ -151,12 +157,19 @@ def run_one_test(source_path, parser, verbose):
 
     ok = not problems
     status = "PASS" if ok else "FAIL"
-    print(f"[{status}] {rel}  ({elapsed_ms:.1f} ms)")
+    if status == "FAIL":
+        print(f"[{status}] {rel}  ({elapsed_ms:.1f} ms)")
     for p in problems:
         print(f"        {p}")
 
-    if not ok and verbose:
-        print(f"        tree: {root}")
+    if print_tree or (not ok and verbose):
+        print("\n--- Parse Tree (S-Expression) ---")
+        try:
+            tree_str = root.sexp() if callable(getattr(root, "sexp", None)) else root.sexp
+        except Exception:
+            tree_str = str(root)
+        print(tree_str)
+        print("---------------------------------\n")
 
     return ok
 
@@ -183,6 +196,17 @@ def perf_smoke(parser, language):
 
 def main():
     verbose = "-v" in sys.argv or "--verbose" in sys.argv
+    print_tree = "-t" in sys.argv or "--print-tree" in sys.argv
+
+    single_file = None
+    args = sys.argv[1:]
+    i = 0
+    while i < len(args):
+        if args[i] in ("-f", "--file") and i + 1 < len(args):
+            single_file = pathlib.Path(args[i + 1]).resolve()
+            i += 2
+        else:
+            i += 1
 
     ext = _lib_ext()
     lsl_dll  = ROOT / "lsl"  / f"lsl{ext}"
@@ -203,6 +227,15 @@ def main():
     lsl_parser  = Parser(lsl_lang)
     slua_parser = Parser(slua_lang)
 
+    if single_file:
+        if not single_file.exists():
+            print(f"ERROR: file not found: {single_file}")
+            return 1
+        parser = lsl_parser if "lsl" in single_file.parts or single_file.suffix == ".lsl" else slua_parser
+        print(f"=== Running single test: {single_file.name} ===")
+        success = run_one_test(single_file, parser, verbose=True, print_tree=True)
+        return 0 if success else 1
+
     groups = [
         ("lsl",  lsl_parser,  HERE / "lsl",  "*.lsl"),
         ("slua", slua_parser, HERE / "slua", "*.slua"),
@@ -219,7 +252,7 @@ def main():
         print(f"\n=== {name} ===")
         for source_path in sorted(directory.glob(pattern)):
             total += 1
-            if run_one_test(source_path, parser, verbose):
+            if run_one_test(source_path, parser, verbose, print_tree):
                 passed += 1
             else:
                 failed_paths.append(source_path)

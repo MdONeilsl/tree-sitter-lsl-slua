@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "dostmt"
+  ],
+  "expect_error": false
+}

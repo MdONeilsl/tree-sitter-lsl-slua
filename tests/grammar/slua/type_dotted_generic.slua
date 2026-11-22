@@ -1,0 +1,1 @@
+type T = Net.Http.Response<string>

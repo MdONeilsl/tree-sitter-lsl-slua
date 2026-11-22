@@ -1,0 +1,1 @@
+if condition then doSomething() elseif other then doElse() else doDefault() end

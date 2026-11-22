@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "tassert"
+  ],
+  "expect_error": false
+}

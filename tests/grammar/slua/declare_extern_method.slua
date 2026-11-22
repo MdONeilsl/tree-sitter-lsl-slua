@@ -1,0 +1,1 @@
+declare extern type Foo with function bar(self): number end

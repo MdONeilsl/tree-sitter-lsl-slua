@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "tableconstructor"
+  ],
+  "expect_error": false
+}

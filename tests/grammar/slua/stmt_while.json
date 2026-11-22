@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "whilestmt"
+  ],
+  "expect_error": false
+}

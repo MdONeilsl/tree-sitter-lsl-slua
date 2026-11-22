@@ -1,0 +1,1 @@
+declare extern type Foo with read x: number end

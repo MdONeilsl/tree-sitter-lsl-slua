@@ -1,0 +1,7 @@
+{
+  "must_contain": [
+    "index",
+    "member"
+  ],
+  "expect_error": false
+}

@@ -1,4 +1,3 @@
-# grammars/slua/type_rules.py
 from ..helpers import (
     rule_alias,
     rule_choice,
@@ -7,6 +6,7 @@ from ..helpers import (
     rule_prec_left,
     rule_prec_right,
     rule_repeat,
+    rule_repeat1,
     rule_seq,
     rule_string,
     rule_symbol,
@@ -15,119 +15,238 @@ from ..helpers import (
 
 def rules():
     return [
-        # Hidden dispatcher — the visible leaves are what matter.
-        ("_type", rule_symbol("_type_union")),
+        ("Type", rule_symbol("Union")),
 
-        ("_type_union", rule_choice(
-            rule_symbol("_type_intersection"),
-            rule_prec_left(1, rule_seq(
-                rule_symbol("_type_union"),
+        ("Union", rule_prec_left(1, rule_seq(
+            rule_symbol("Intersection"),
+            rule_repeat(rule_seq(
                 rule_string("|"),
-                rule_symbol("_type_intersection"),
+                rule_symbol("Intersection"),
             )),
-        )),
+        ))),
 
-        ("_type_intersection", rule_choice(
-            rule_symbol("_type_optional"),
-            rule_prec_left(2, rule_seq(
-                rule_symbol("_type_intersection"),
+        ("Intersection", rule_prec_left(2, rule_seq(
+            rule_optional(rule_symbol("attributes")),
+            rule_symbol("SimpleType"),
+            rule_repeat(rule_seq(
                 rule_string("&"),
-                rule_symbol("_type_optional"),
+                rule_symbol("SimpleType"),
             )),
-        )),
+        ))),
 
-        ("_type_optional", rule_choice(
-            rule_symbol("_type_simple"),
+        ("SimpleType", rule_choice(
+            rule_symbol("typeapp"),
+            rule_symbol("VariadicTypePack"),
+            rule_prec_right(1, rule_seq(
+                rule_symbol("VariadicTypePack"),
+                rule_string("?"),
+            )),
+            rule_alias(rule_symbol("identifier"), "type_identifier"),
+            rule_symbol("builtin"),
+            rule_symbol("TableType"),
+            rule_symbol("FunctionType"),
+            rule_symbol("typeof"),
+            rule_symbol("typemember"),
+            rule_symbol("tparen"),
+            rule_symbol("string"),
             rule_prec(3, rule_seq(
-                rule_symbol("_type_simple"),
+                rule_choice(
+                    rule_symbol("typeapp"),
+                    rule_alias(rule_symbol("identifier"), "type_identifier"),
+                    rule_symbol("builtin"),
+                    rule_symbol("TableType"),
+                    rule_symbol("FunctionType"),
+                    rule_symbol("typeof"),
+                    rule_symbol("typemember"),
+                    rule_symbol("tparen"),
+                    rule_symbol("string"),
+                ),
                 rule_string("?"),
             )),
         )),
 
-        ("_type_simple", rule_choice(
-            rule_symbol("_type_reference"),
-            rule_symbol("_type_table"),
-            rule_symbol("_type_function"),
-            rule_symbol("_type_parenthesized"),
-            rule_seq(rule_string("typeof"), rule_string("("), rule_symbol("_expression"), rule_string(")")),
-            rule_seq(rule_string("..."), rule_symbol("_type")),
-            rule_string("nil"),
-            rule_string("true"),
-            rule_string("false"),
-        )),
-
-        ("_type_reference", rule_choice(
-            rule_symbol("_type_reference_plain"),
-            rule_symbol("_type_reference_generic"),
-        )),
-
-        # `T` or `T...` (variadic type pack). The `prec.right` on the whole
-        # rule prefers the shift of `...` over reducing to plain `T`.
-        # Every identifier leaf is aliased to `type_identifier`.
-        ("_type_reference_plain", rule_prec_right(1, rule_choice(
-            rule_seq(rule_alias(rule_symbol("identifier"), "type_identifier"), rule_string("...")),
-            rule_alias(rule_symbol("identifier"), "type_identifier"),
+        ("VariadicTypePack", rule_prec(3, rule_seq(
+            rule_choice(
+                rule_symbol("typeapp"),
+                rule_symbol("typemember"),
+                rule_alias(rule_symbol("identifier"), "type_identifier"),
+            ),
+            rule_string("..."),
         ))),
 
-        # `Array<T>`, `Pair<K, V>`. The base name is `type_identifier`;
-        # each argument recursively reaches its own `type_identifier`.
-        ("_type_reference_generic", rule_seq(
-            rule_alias(rule_symbol("identifier"), "type_identifier"),
-            rule_string("<"),
-            rule_symbol("_type_list"),
-            rule_string(">"),
-        )),
-
-        ("_type_list", rule_seq(
-            rule_symbol("_type"),
-            rule_repeat(rule_seq(rule_string(","), rule_symbol("_type"))),
-        )),
-
-        ("_type_parenthesized", rule_seq(
+        ("typeof", rule_seq(
+            rule_string("typeof"),
             rule_string("("),
-            rule_symbol("_type"),
+            rule_symbol("exp"),
             rule_string(")"),
         )),
 
-        ("_type_table", rule_choice(
-            # Array type: `{ T }`
-            rule_seq(rule_string("{"), rule_symbol("_type"), rule_string("}")),
-            # Struct / indexer: `{ ... }` or `{}`
-            rule_seq(
-                rule_string("{"),
-                rule_optional(rule_seq(
-                    rule_symbol("type_table_prop"),
-                    rule_repeat(rule_seq(
-                        rule_choice(rule_string(","), rule_string(";")),
-                        rule_symbol("type_table_prop"),
-                    )),
-                    rule_choice(rule_string(","), rule_string(";"), rule_optional(rule_string(","))),
-                )),
-                rule_string("}"),
+        ("builtin", rule_choice(
+            rule_string("nil"),
+            rule_string("boolean"),
+            rule_string("number"),
+            rule_string("string"),
+            rule_string("thread"),
+            rule_string("userdata"),
+            rule_string("any"),
+            rule_string("never"),
+            rule_string("buffer"),
+        )),
+
+        ("type_reference", rule_choice(
+            rule_symbol("type_reference_plain"),
+            rule_symbol("typeapp"),
+        )),
+
+        ("type_reference_plain", rule_prec_right(1, rule_seq(
+            rule_choice(
+                rule_alias(rule_symbol("identifier"), "type_identifier"),
+                rule_symbol("typemember"),
+            ),
+            rule_optional(rule_string("...")),
+        ))),
+
+        ("typeapp", rule_prec(1, rule_seq(
+            rule_choice(
+                rule_alias(rule_symbol("identifier"), "type_identifier"),
+                rule_symbol("typemember"),
+            ),
+            rule_string("<"),
+            rule_symbol("TypeList"),
+            rule_string(">"),
+        ))),
+
+        ("TypeList", rule_seq(
+            rule_choice(
+                rule_symbol("Type"),
+                rule_seq(rule_string("..."), rule_symbol("Type")),
+            ),
+            rule_repeat(rule_seq(
+                rule_string(","),
+                rule_choice(
+                    rule_symbol("Type"),
+                    rule_seq(rule_string("..."), rule_symbol("Type")),
+                ),
+            )),
+            rule_optional(rule_string(",")),
+        )),
+
+        ("tparen", rule_seq(
+            rule_string("("),
+            rule_symbol("Type"),
+            rule_string(")"),
+        )),
+
+        ("TableType", rule_seq(
+            rule_string("{"),
+            rule_optional(
+                rule_seq(
+                    rule_choice(
+                        rule_symbol("TableProp"),
+                        rule_symbol("TableIndexer"),
+                        rule_symbol("Type"),
+                    ),
+                    rule_repeat(
+                        rule_seq(
+                            rule_choice(rule_string(","), rule_string(";")),
+                            rule_choice(
+                                rule_symbol("TableProp"),
+                                rule_symbol("TableIndexer"),
+                                rule_symbol("Type"),
+                            )
+                        )
+                    ),
+                    rule_optional(rule_choice(rule_string(","), rule_string(";")))
+                )
+            ),
+            rule_string("}"),
+        )),
+
+        ("TableIndexer", rule_seq(
+            rule_optional(rule_choice(rule_string("read"), rule_string("write"))),
+            rule_string("["),
+            rule_symbol("Type"),
+            rule_string("]"),
+            rule_string(":"),
+            rule_symbol("Type"),
+        )),
+
+        ("TableProp", rule_seq(
+            rule_optional(rule_choice(rule_string("read"), rule_string("write"))),
+            rule_alias(rule_symbol("identifier"), "type_table_field"),
+            rule_string(":"),
+            rule_symbol("Type"),
+        )),
+
+        ("typemember", rule_seq(
+            rule_alias(rule_symbol("identifier"), "type_identifier"),
+            rule_repeat1(rule_seq(
+                rule_string("."),
+                rule_alias(rule_symbol("identifier"), "type_identifier"),
+            )),
+        )),
+
+        ("FunctionType", rule_seq(
+            rule_optional(rule_symbol("GenericTypeList")),
+            rule_string("("),
+            rule_optional(
+                rule_seq(
+                    rule_choice(
+                        rule_seq(
+                            rule_string("..."),
+                            rule_optional(rule_choice(
+                                rule_seq(rule_string(":"), rule_symbol("Type")),
+                                rule_symbol("Type"),
+                            )),
+                        ),
+                        rule_seq(
+                            rule_alias(rule_symbol("builtin"), "parameter_name"),
+                            rule_string(":"),
+                            rule_symbol("Type"),
+                        ),
+                        rule_seq(
+                            rule_optional(rule_seq(rule_alias(rule_symbol("identifier"), "parameter_name"), rule_string(":"))),
+                            rule_symbol("Type")
+                        ),
+                    ),
+                    rule_repeat(
+                        rule_seq(
+                            rule_string(","),
+                            rule_choice(
+                                rule_seq(
+                                    rule_string("..."),
+                                    rule_optional(rule_choice(
+                                        rule_seq(rule_string(":"), rule_symbol("Type")),
+                                        rule_symbol("Type"),
+                                    )),
+                                ),
+                                rule_seq(
+                                    rule_alias(rule_symbol("builtin"), "parameter_name"),
+                                    rule_string(":"),
+                                    rule_symbol("Type"),
+                                ),
+                                rule_seq(
+                                    rule_optional(rule_seq(rule_alias(rule_symbol("identifier"), "parameter_name"), rule_string(":"))),
+                                    rule_symbol("Type")
+                                ),
+                            )
+                        )
+                    ),
+                    rule_optional(rule_string(","))
+                )
+            ),
+            rule_string(")"),
+            rule_string("->"),
+            rule_choice(
+                rule_symbol("Type"),
+                rule_seq(rule_string("("), rule_optional(rule_symbol("TypeList")), rule_string(")")),
+                rule_seq(rule_string("..."), rule_symbol("Type")),
             ),
         )),
 
-        ("type_table_prop", rule_choice(
-            # Computed key: `[K]: V` — K is a full type.
-            rule_seq(rule_string("["), rule_symbol("_type"), rule_string("]"), rule_string(":"), rule_symbol("_type")),
-            # Named key: `name: V` — name is a field of the struct type.
-            rule_seq(rule_alias(rule_symbol("identifier"), "type_table_field"), rule_string(":"), rule_symbol("_type")),
-        )),
-
-        ("_type_function", rule_seq(
-            rule_symbol("_type_function_params"),
-            rule_string("->"),
-            rule_symbol("_type_function_ret"),
-        )),
-
-        ("_type_function_params", rule_seq(
-            rule_string("("),
-            rule_optional(rule_symbol("_type_list")),
-            rule_string(")"),
-        )),
-
-        ("_type_function_ret", rule_choice(
-            rule_symbol("_type"),
-            rule_seq(rule_string("("), rule_optional(rule_symbol("_type_list")), rule_string(")")),
+        ("ReturnType", rule_choice(
+            rule_symbol("Type"),
+            rule_seq(rule_string("("), rule_optional(rule_symbol("TypeList")), rule_string(")")),
+            rule_seq(rule_string("..."), rule_symbol("Type")),
         )),
     ]

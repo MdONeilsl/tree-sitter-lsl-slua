@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "declfunc"
+  ],
+  "expect_error": false
+}

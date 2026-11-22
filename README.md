@@ -432,7 +432,7 @@ distinguish, for example, a variable name from a function name by
 | LSL | SLua |
 |---|---|
 | `event_name` | `attribute_name` |
-| `function_name` | `declared_name` |
+| `function_name` | `class_identifier` |
 | `label_name` | `function_name` |
 | `parameter_name` | `member_name` |
 | `state_name` | `member_object_name` |
@@ -441,6 +441,7 @@ distinguish, for example, a variable name from a function name by
 | | `table_field_name` |
 | | `type_identifier` |
 | | `type_param_name` |
+| | `type_table_field` |
 | | `variable_name` |
 
 Any identifier not covered by a role remains a plain `identifier`. This makes

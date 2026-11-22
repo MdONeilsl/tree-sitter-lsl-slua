@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "paren"
+  ],
+  "expect_error": false
+}

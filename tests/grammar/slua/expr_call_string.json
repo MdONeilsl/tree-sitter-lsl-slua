@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "functioncall"
+  ],
+  "expect_error": false
+}

@@ -1,0 +1,6 @@
+{
+  "must_contain": [
+    "index"
+  ],
+  "expect_error": false
+}

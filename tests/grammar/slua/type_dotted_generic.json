@@ -1,0 +1,7 @@
+{
+  "must_contain": [
+    "typedef",
+    "typemember"
+  ],
+  "expect_error": false
+}

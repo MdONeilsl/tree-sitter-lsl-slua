@@ -1,0 +1,1 @@
+declare function pcall<A..., R...>(f: (A...) -> R..., ...: A...): (boolean, R...)
